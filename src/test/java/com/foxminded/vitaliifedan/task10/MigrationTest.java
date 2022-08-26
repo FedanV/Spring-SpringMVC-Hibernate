@@ -1,39 +1,27 @@
 package com.foxminded.vitaliifedan.task10;
 
+import com.foxminded.vitaliifedan.task10.config.ContainersEnvironment;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.properties")
-class MigrationTest {
-    @Value("${spring.datasource.url}")
-    private String url;
-    @Value("${spring.datasource.username}")
-    private String user;
-    @Value("${spring.datasource.password}")
-    private String password;
+@JdbcTest
+@AutoConfigureTestDatabase(
+        replace = AutoConfigureTestDatabase.Replace.NONE)
+class MigrationTest extends ContainersEnvironment {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     void should_createAllTablesFromMigrations() throws SQLException {
-        List<String> expectedResult = List.of("audience", "flyway_schema_history", "group", "lecture", "user");
-        List<String> actualResult = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(url, user, password)) {
-            String showTables = "SHOW TABLES";
-            try(PreparedStatement statement = conn.prepareStatement(showTables)) {
-                try(ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
-                        actualResult.add(resultSet.getString("table_name"));
-                    }
-                }
-            }
-        }
+        List<String> expectedResult = List.of("flyway_schema_history", "group", "user", "lecture", "audience");
+        List<String> actualResult = jdbcTemplate.queryForList("SELECT table_name FROM information_schema.tables WHERE table_schema='public'", String.class);
         Assertions.assertEquals(expectedResult, actualResult);
     }
 }
