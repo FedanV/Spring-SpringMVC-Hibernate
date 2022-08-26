@@ -7,7 +7,9 @@ import lombok.Setter;
 @Setter
 public class Teacher extends User {
 
-    public Teacher(String name, String surname, String login, String password, Roles role, UserTypes userType) {
+    private String specialization;
+
+    public Teacher(String name, String surname, String login, String password, Role role, UserType userType) {
         super(name, surname, login, password, role, userType);
     }
 
