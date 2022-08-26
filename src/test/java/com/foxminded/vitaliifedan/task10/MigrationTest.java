@@ -1,6 +1,6 @@
 package com.foxminded.vitaliifedan.task10;
 
-import com.foxminded.vitaliifedan.task10.config.ContainersEnvironment;
+import com.foxminded.vitaliifedan.task10.containers.BaseDaoTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.util.List;
 @JdbcTest
 @AutoConfigureTestDatabase(
         replace = AutoConfigureTestDatabase.Replace.NONE)
-class MigrationTest extends ContainersEnvironment {
+class MigrationTest extends BaseDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
