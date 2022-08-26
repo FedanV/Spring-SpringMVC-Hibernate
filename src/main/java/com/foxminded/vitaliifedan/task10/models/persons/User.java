@@ -1,6 +1,5 @@
 package com.foxminded.vitaliifedan.task10.models.persons;
 
-import com.foxminded.vitaliifedan.task10.models.groups.Group;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,14 +13,10 @@ public class User {
     private String phone;
     private String login;
     private String password;
-    private Roles role;
-    private UserTypes userType;
-    private String specialization;
-    private int course;
-    private String faculty;
-    private Group group;
+    private Role role;
+    private UserType userType;
 
-    public User(String name, String surname, String login, String password, Roles role, UserTypes userType) {
+    public User(String name, String surname, String login, String password, Role role, UserType userType) {
         this.name = name;
         this.surname = surname;
         this.login = login;
