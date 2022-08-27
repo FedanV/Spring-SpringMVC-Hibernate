@@ -20,7 +20,7 @@ class MigrationTest extends BaseDaoTest {
 
     @Test
     void should_createAllTablesFromMigrations() throws SQLException {
-        List<String> expectedResult = List.of("flyway_schema_history", "group", "user", "lecture", "audience");
+        List<String> expectedResult = List.of("flyway_schema_history", "user", "student_group", "group", "course", "lecture", "audience", "teacher_course");
         List<String> actualResult = jdbcTemplate.queryForList("SELECT table_name FROM information_schema.tables WHERE table_schema='public'", String.class);
         Assertions.assertEquals(expectedResult, actualResult);
     }

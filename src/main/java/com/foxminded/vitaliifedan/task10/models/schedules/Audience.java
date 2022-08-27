@@ -6,6 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Audience {
+
+    int id;
     private int roomNumber;
 
     public Audience() {

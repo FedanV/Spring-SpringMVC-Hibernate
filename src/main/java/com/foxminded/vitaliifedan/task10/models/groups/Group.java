@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 public class Group {
 
+    int id;
     private String groupName;
     private List<Student> students;
 

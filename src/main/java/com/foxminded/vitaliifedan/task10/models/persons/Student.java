@@ -9,11 +9,9 @@ import lombok.Setter;
 @Setter
 public class Student extends User {
 
-    private int course;
-    private String faculty;
     private Group group;
 
-    public Student(String name, String surname, String login, String password, Role role, UserType userType) {
-        super(name, surname, login, password, role, userType);
+    public Student(String login, String password, Role role, UserType userType) {
+        super(login, password, role, userType);
     }
 }

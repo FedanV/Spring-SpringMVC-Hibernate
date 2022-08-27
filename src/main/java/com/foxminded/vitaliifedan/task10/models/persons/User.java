@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class User {
 
+    int id;
     private String name;
     private String surname;
     private int age;
@@ -16,9 +17,7 @@ public class User {
     private Role role;
     private UserType userType;
 
-    public User(String name, String surname, String login, String password, Role role, UserType userType) {
-        this.name = name;
-        this.surname = surname;
+    public User(String login, String password, Role role, UserType userType) {
         this.login = login;
         this.password = password;
         this.role = role;

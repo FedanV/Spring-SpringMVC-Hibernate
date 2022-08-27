@@ -11,24 +11,24 @@ import java.util.Date;
 @Setter
 public class Lecture {
 
-    private String lectureName;
+
+    int id;
+    private Course course;
     private Audience audience;
     private Teacher teacher;
-    private Date date;
+    private Date lectureDate;
     private Group group;
-    private Days dayOfWeek;
     private int pairNumber;
 
     public Lecture() {
     }
 
-    public Lecture(String lectureName, Audience audience, Teacher teacher, Date date, Group group, Days dayOfWeek, int pairNumber) {
-        this.lectureName = lectureName;
+    public Lecture(Course course, Audience audience, Teacher teacher, Date lectureDate, Group group, int pairNumber) {
+        this.course = course;
         this.audience = audience;
         this.teacher = teacher;
-        this.date = date;
+        this.lectureDate = lectureDate;
         this.group = group;
-        this.dayOfWeek = dayOfWeek;
         this.pairNumber = pairNumber;
     }
 }
