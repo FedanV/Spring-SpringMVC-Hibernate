@@ -8,13 +8,21 @@ import lombok.Setter;
 public class Audience {
 
     int id;
-    private int roomNumber;
+    private Integer roomNumber;
 
     public Audience() {
     }
 
-    public Audience(int roomNumber) {
+    public Audience(Integer roomNumber) {
         this.roomNumber = roomNumber;
     }
+
+    public Audience(int id, Integer roomNumber) {
+        this.id = id;
+        this.roomNumber = roomNumber;
+    }
+
+
+
 
 }

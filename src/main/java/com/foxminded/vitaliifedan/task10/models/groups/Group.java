@@ -14,8 +14,24 @@ public class Group {
     private String groupName;
     private List<Student> students;
 
+    public Group() {
+    }
+
+    public Group(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public Group(int id, String groupName) {
+        this.id = id;
+        this.groupName = groupName;
+    }
+
     public Group(String groupName, List<Student> students) {
         this.groupName = groupName;
         this.students = students;
+    }
+
+    public Group(int id) {
+        this.id = id;
     }
 }

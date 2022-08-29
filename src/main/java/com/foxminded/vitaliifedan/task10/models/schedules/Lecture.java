@@ -5,7 +5,7 @@ import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -14,16 +14,26 @@ public class Lecture {
 
     int id;
     private Course course;
-    private Audience audience;
     private Teacher teacher;
-    private Date lectureDate;
+    private LocalDate lectureDate;
     private Group group;
-    private int pairNumber;
+    private Integer pairNumber;
+    private Audience audience;
 
     public Lecture() {
     }
 
-    public Lecture(Course course, Audience audience, Teacher teacher, Date lectureDate, Group group, int pairNumber) {
+    public Lecture(Course course, Teacher teacher, LocalDate lectureDate, Group group, Integer pairNumber, Audience audience) {
+        this.course = course;
+        this.audience = audience;
+        this.teacher = teacher;
+        this.lectureDate = lectureDate;
+        this.group = group;
+        this.pairNumber = pairNumber;
+    }
+
+    public Lecture(int id, Course course, Teacher teacher, LocalDate lectureDate, Group group, Integer pairNumber, Audience audience) {
+        this.id = id;
         this.course = course;
         this.audience = audience;
         this.teacher = teacher;

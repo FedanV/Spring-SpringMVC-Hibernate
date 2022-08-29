@@ -16,4 +16,11 @@ public class Teacher extends User {
         super(login, password, role, userType);
     }
 
+    public Teacher(int id, String login, String password, Role role, UserType userType) {
+        super(id, login, password, role, userType);
+    }
+
+    public Teacher(int id) {
+        super(id);
+    }
 }
