@@ -1,4 +1,4 @@
-package com.foxminded.vitaliifedan.task10;
+package com.foxminded.vitaliifedan.task10.migrations;
 
 import com.foxminded.vitaliifedan.task10.containers.BaseDaoTest;
 import org.junit.jupiter.api.Assertions;
@@ -19,8 +19,8 @@ class MigrationTest extends BaseDaoTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    void should_createAllTablesFromMigrations() throws SQLException {
-        List<String> expectedResult = List.of("flyway_schema_history", "user", "student_group", "group", "course", "lecture", "audience", "teacher_course");
+    void should_createAllTablesFromMigrations() {
+        List<String> expectedResult = List.of("flyway_schema_history", "users", "student_group", "groups", "course", "lecture", "audience", "teacher_course");
         List<String> actualResult = jdbcTemplate.queryForList("SELECT table_name FROM information_schema.tables WHERE table_schema='public'", String.class);
         Assertions.assertEquals(expectedResult, actualResult);
     }
