@@ -1,13 +1,13 @@
 package com.foxminded.vitaliifedan.task10.models.schedules;
 
+import com.foxminded.vitaliifedan.task10.models.IntegerId;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Course {
+public class Course extends IntegerId {
 
-    private int id;
     private String courseName;
 
     public Course() {
@@ -25,4 +25,6 @@ public class Course {
     public Course(int id) {
         this.id = id;
     }
+
+
 }

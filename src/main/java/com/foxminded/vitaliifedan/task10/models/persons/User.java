@@ -1,13 +1,13 @@
 package com.foxminded.vitaliifedan.task10.models.persons;
 
+import com.foxminded.vitaliifedan.task10.models.IntegerId;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class User {
+public class User extends IntegerId {
 
-    int id;
     private String name;
     private String surname;
     private Integer age;
@@ -17,6 +17,19 @@ public class User {
     private Role role;
     private UserType userType;
 
+
+    public User(Integer id) {
+        super(id);
+    }
+
+    public User(Integer id, String login, String password, Role role, UserType userType) {
+        super(id);
+        this.login = login;
+        this.password = password;
+        this.role = role;
+        this.userType = userType;
+    }
+
     public User() {
     }
 
@@ -25,17 +38,5 @@ public class User {
         this.password = password;
         this.role = role;
         this.userType = userType;
-    }
-
-    public User(int id, String login, String password, Role role, UserType userType) {
-        this.id = id;
-        this.login = login;
-        this.password = password;
-        this.role = role;
-        this.userType = userType;
-    }
-
-    public User(int id) {
-        this.id = id;
     }
 }

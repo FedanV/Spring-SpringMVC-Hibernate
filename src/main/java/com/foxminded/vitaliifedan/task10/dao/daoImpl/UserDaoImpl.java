@@ -1,15 +1,20 @@
 package com.foxminded.vitaliifedan.task10.dao.daoImpl;
 
+import com.foxminded.vitaliifedan.task10.dao.AbstractCrudDao;
 import com.foxminded.vitaliifedan.task10.dao.UserDao;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl extends AbstractCrudDao<User, Integer> implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -18,23 +23,43 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Integer create(User entity) {
+    protected User create(User entity) throws SQLException {
         String createUser = "INSERT INTO users(login, password, role, user_type) VALUES(?, ?, ?, ?)";
-        return jdbcTemplate.update(createUser, entity.getLogin(), entity.getPassword(),
-                entity.getRole().toString(), entity.getUserType().toString());
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        int affectedRow = jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement(createUser, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, entity.getLogin());
+            statement.setString(2, entity.getPassword());
+            statement.setString(3, entity.getRole().toString());
+            statement.setString(4, entity.getUserType().toString());
+            return statement;
+        }, keyHolder);
+        if (affectedRow == 0) {
+            throw new SQLException("User with login " + entity.getLogin() + " was not created");
+        }
+        int id = (int) keyHolder.getKeys().get("id");
+        return new User(id, entity.getLogin(), entity.getPassword(), entity.getRole(), entity.getUserType());
     }
 
     @Override
-    public Integer update(User entity) {
+    protected User update(User entity) throws SQLException {
         String updateUser = "UPDATE users SET login=?, password=?, role=?, user_type=? WHERE id=?";
-        return jdbcTemplate.update(updateUser, entity.getLogin(), entity.getPassword(),
+        int affectedRow = jdbcTemplate.update(updateUser, entity.getLogin(), entity.getPassword(),
                 entity.getRole().toString(), entity.getUserType().toString(), entity.getId());
+        if (affectedRow == 0) {
+            throw new SQLException("User with login " + entity.getLogin() + " was not updated");
+        }
+        return new User(entity.getId(), entity.getLogin(), entity.getPassword(), entity.getRole(), entity.getUserType());
     }
 
     @Override
-    public Integer delete(Integer id) {
+    public Boolean delete(Integer id) throws SQLException {
         String deleteUser = "DELETE FROM users WHERE id=?";
-        return jdbcTemplate.update(deleteUser, id);
+        int affectedRow = jdbcTemplate.update(deleteUser, id);
+        if (affectedRow == 0) {
+            throw new SQLException("User with id " + id + " was not deleted");
+        }
+        return true;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.foxminded.vitaliifedan.task10.models.schedules;
 
+import com.foxminded.vitaliifedan.task10.models.IntegerId;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
 import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import lombok.Getter;
@@ -9,10 +10,8 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class Lecture {
+public class Lecture extends IntegerId {
 
-
-    int id;
     private Course course;
     private Teacher teacher;
     private LocalDate lectureDate;
