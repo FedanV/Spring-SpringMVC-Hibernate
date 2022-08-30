@@ -15,6 +15,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
 
+import java.sql.SQLException;
+
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @JdbcTest
@@ -23,7 +25,6 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 )
 @Sql(scripts = "/databaseTestData/users_table_test_data.sql", executionPhase = BEFORE_TEST_METHOD)
 class UserDaoImplTest extends BaseDaoTest {
-
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -36,18 +37,18 @@ class UserDaoImplTest extends BaseDaoTest {
     }
 
     @Test
-    void should_CreateUser() {
-        Assertions.assertEquals(1, userDao.create(new User("login", "pass", Role.ROLE_ADMIN, UserType.USER)));
+    void should_CreateUser() throws SQLException {
+        Assertions.assertNotNull(userDao.save(new User(null, "login", "pass", Role.ROLE_ADMIN, UserType.USER)));
     }
 
     @Test
-    void should_UpdateUser() {
-        Assertions.assertEquals(1, userDao.update(new User(1, "new Login", "new Pass", Role.ROLE_STUDENT, UserType.STUDENT)));
+    void should_UpdateUser() throws SQLException {
+        Assertions.assertNotNull(userDao.save(new User(1, "new Login", "new Pass", Role.ROLE_STUDENT, UserType.STUDENT)));
     }
 
     @Test
-    void should_DeleteUser() {
-        Assertions.assertEquals(1, userDao.delete(2));
+    void should_DeleteUser() throws SQLException {
+        Assertions.assertTrue(userDao.delete(2));
     }
 
     @Test

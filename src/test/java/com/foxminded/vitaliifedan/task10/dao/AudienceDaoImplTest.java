@@ -12,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.sql.SQLException;
+
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @JdbcTest
@@ -31,18 +33,18 @@ class AudienceDaoImplTest extends BaseDaoTest {
     }
 
     @Test
-    void should_CreateAudience() {
-        Assertions.assertEquals(1, audienceDao.create(new Audience(4)));
+    void should_CreateAudience() throws SQLException {
+        Assertions.assertNotNull(audienceDao.save(new Audience(null, 4)));
     }
 
     @Test
-    void should_UpdateAudience() {
-        Assertions.assertEquals(1, audienceDao.update(new Audience(2, 100)));
+    void should_UpdateAudience() throws SQLException {
+        Assertions.assertNotNull(audienceDao.save(new Audience(2, 100)));
     }
 
     @Test
-    void should_DeleteAudience() {
-        Assertions.assertEquals(1, audienceDao.delete(3));
+    void should_DeleteAudience() throws SQLException {
+        Assertions.assertTrue(audienceDao.delete(3));
     }
 
     @Test
@@ -54,6 +56,5 @@ class AudienceDaoImplTest extends BaseDaoTest {
     void should_GetAudienceById() {
         Assertions.assertTrue(audienceDao.getById(3).isPresent());
     }
-
 
 }

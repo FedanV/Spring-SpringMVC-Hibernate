@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.sql.SQLException;
+
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @JdbcTest
@@ -32,17 +34,17 @@ class TeacherDaoImplTest extends BaseDaoTest {
     }
 
     @Test
-    void should_AddGroupToStudent() {
-        Assertions.assertEquals(1, teacherDao.addCourseToTeacher(3, 3));
+    void should_AddGroupToStudent() throws SQLException {
+        Assertions.assertNotNull(teacherDao.addCourseToTeacher(3, 3));
     }
 
     @Test
-    void should_RemoveStudentFromGroup() {
-        Assertions.assertEquals(1, teacherDao.removeCourseByTeacherId(2, 3));
+    void should_RemoveStudentFromGroup() throws SQLException {
+        Assertions.assertTrue(teacherDao.removeCourseByTeacherId(2, 3));
     }
 
     @Test
-    void should_updateGroupForStudentId() {
-        Assertions.assertEquals(1, teacherDao.updateCourseForTeacherId(2, 1, 3));
+    void should_updateGroupForStudentId() throws SQLException {
+        Assertions.assertNotNull(teacherDao.updateCourseForTeacherId(2, 1, 3));
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
@@ -40,22 +41,22 @@ class LectureDaoImplTest extends BaseDaoTest {
     }
 
     @Test
-    void should_CreateLecture() {
+    void should_CreateLecture() throws SQLException {
         Lecture lecture = new Lecture(new Course(1), new Teacher(1), LocalDate.now(), new Group(1), 1,
                 new Audience(1, null));
-        Assertions.assertEquals(1, lectureDao.create(lecture));
+        Assertions.assertNotNull(lectureDao.save(lecture));
     }
 
     @Test
-    void should_UpdateLecture() {
+    void should_UpdateLecture() throws SQLException {
         Lecture lecture = new Lecture(2, new Course(1), new Teacher(1), LocalDate.now(), new Group(1), 1,
                 new Audience(1, null));
-        Assertions.assertEquals(1, lectureDao.update(lecture));
+        Assertions.assertNotNull(lectureDao.save(lecture));
     }
 
     @Test
-    void should_DeleteLecture() {
-        Assertions.assertEquals(1, lectureDao.delete(1));
+    void should_DeleteLecture() throws SQLException {
+        Assertions.assertTrue(lectureDao.delete(3));
     }
 
     @Test

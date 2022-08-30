@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.List;
+import java.sql.SQLException;
 
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
@@ -31,31 +31,28 @@ class GroupDaoImplTest extends BaseDaoTest {
         groupDao = new GroupDaoImpl(jdbcTemplate);
     }
 
-
     @Test
     void should_GetAllGroupsFromTable() {
-        List<Group> all = groupDao.getAll();
         Assertions.assertEquals(3, groupDao.getAll().size());
     }
 
     @Test
-    void should_CreateGroup() {
-        Assertions.assertEquals(1, groupDao.create(new Group("test4")));
+    void should_CreateGroup() throws SQLException {
+        Assertions.assertNotNull(groupDao.save(new Group("test4")));
     }
 
     @Test
-    void should_UpdateGroup() {
-        Assertions.assertEquals(1, groupDao.update(new Group(2, "test5")));
+    void should_UpdateGroup() throws SQLException {
+        Assertions.assertNotNull(groupDao.save(new Group(2, "test5")));
     }
 
     @Test
-    void should_DeleteGroup() {
-        Assertions.assertEquals(1, groupDao.delete(3));
+    void should_DeleteGroup() throws SQLException {
+        Assertions.assertTrue(groupDao.delete(3));
     }
 
     @Test
     void should_GetGroupById() {
-        List<Group> all = groupDao.getAll();
         Assertions.assertTrue(groupDao.getById(2).isPresent());
     }
 
