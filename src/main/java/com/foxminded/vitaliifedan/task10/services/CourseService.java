@@ -1,45 +1,18 @@
 package com.foxminded.vitaliifedan.task10.services;
 
-import com.foxminded.vitaliifedan.task10.dao.CourseDao;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-@Transactional(readOnly = true)
-public class CourseService {
+public interface CourseService {
+    List<Course> findAll();
 
-    private final CourseDao courseDao;
+    Optional<Course> findById(Integer id);
 
-    @Autowired
-    public CourseService(CourseDao courseDao) {
-        this.courseDao = courseDao;
-    }
+    Course create(Course course);
 
-    public List<Course> findAll() {
-        return courseDao.getAll();
-    }
+    Course update(Course course);
 
-    public Optional<Course> findById(Integer id) {
-        return courseDao.getById(id);
-    }
-
-    @Transactional
-    public Course create(Course course) {
-        return courseDao.save(course);
-    }
-
-    @Transactional
-    public Course update(Course course) {
-        return courseDao.save(course);
-    }
-
-    @Transactional
-    public Boolean deleteById(Integer id) {
-        return courseDao.delete(id);
-    }
+    Boolean deleteById(Integer id);
 }
