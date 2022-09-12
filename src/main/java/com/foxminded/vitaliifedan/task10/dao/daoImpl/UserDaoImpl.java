@@ -2,28 +2,32 @@ package com.foxminded.vitaliifedan.task10.dao.daoImpl;
 
 import com.foxminded.vitaliifedan.task10.dao.AbstractCrudDao;
 import com.foxminded.vitaliifedan.task10.dao.UserDao;
+import com.foxminded.vitaliifedan.task10.exceptions.UserException;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class UserDaoImpl extends AbstractCrudDao<User, Integer> implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
+    @Autowired
     public UserDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    protected User create(User entity) throws SQLException {
+    protected User create(User entity) {
         String createUser = "INSERT INTO users(login, password, role, user_type) VALUES(?, ?, ?, ?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         int affectedRow = jdbcTemplate.update(connection -> {
@@ -35,29 +39,29 @@ public class UserDaoImpl extends AbstractCrudDao<User, Integer> implements UserD
             return statement;
         }, keyHolder);
         if (affectedRow == 0) {
-            throw new SQLException("User with login " + entity.getLogin() + " was not created");
+            throw new UserException("User with login " + entity.getLogin() + " was not created");
         }
         int id = (int) keyHolder.getKeys().get("id");
         return new User(id, entity.getLogin(), entity.getPassword(), entity.getRole(), entity.getUserType());
     }
 
     @Override
-    protected User update(User entity) throws SQLException {
+    protected User update(User entity) {
         String updateUser = "UPDATE users SET login=?, password=?, role=?, user_type=? WHERE id=?";
         int affectedRow = jdbcTemplate.update(updateUser, entity.getLogin(), entity.getPassword(),
                 entity.getRole().toString(), entity.getUserType().toString(), entity.getId());
         if (affectedRow == 0) {
-            throw new SQLException("User with login " + entity.getLogin() + " was not updated");
+            throw new UserException("User with login " + entity.getLogin() + " was not updated");
         }
         return new User(entity.getId(), entity.getLogin(), entity.getPassword(), entity.getRole(), entity.getUserType());
     }
 
     @Override
-    public Boolean delete(Integer id) throws SQLException {
+    public Boolean delete(Integer id) {
         String deleteUser = "DELETE FROM users WHERE id=?";
         int affectedRow = jdbcTemplate.update(deleteUser, id);
         if (affectedRow == 0) {
-            throw new SQLException("User with id " + id + " was not deleted");
+            throw new UserException("User with id " + id + " was not deleted");
         }
         return true;
     }
@@ -80,5 +84,6 @@ public class UserDaoImpl extends AbstractCrudDao<User, Integer> implements UserD
         String getUsersByUserType = "SELECT * FROM users WHERE user_type=?";
         return jdbcTemplate.query(getUsersByUserType, new BeanPropertyRowMapper<>(User.class), userType.toString());
     }
+
 
 }

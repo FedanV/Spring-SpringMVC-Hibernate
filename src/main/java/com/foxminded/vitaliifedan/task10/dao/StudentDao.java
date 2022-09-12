@@ -2,13 +2,12 @@ package com.foxminded.vitaliifedan.task10.dao;
 
 import com.foxminded.vitaliifedan.task10.models.persons.Student;
 
-import java.sql.SQLException;
 
 public interface StudentDao {
 
-    Student addGroupToStudent(int userId, int groupId) throws SQLException;
+    Student addGroupToStudent(int userId, int groupId);
 
-    Boolean removeStudentFromGroup(int userId) throws SQLException;
+    Boolean removeStudentFromGroup(int userId);
 
-    Student updateGroupForStudentId(int userId, int groupId) throws SQLException;
+    Student updateGroupForStudentId(int userId, int groupId);
 }

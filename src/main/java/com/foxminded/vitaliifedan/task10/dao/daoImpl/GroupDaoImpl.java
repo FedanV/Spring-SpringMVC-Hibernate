@@ -2,14 +2,15 @@ package com.foxminded.vitaliifedan.task10.dao.daoImpl;
 
 import com.foxminded.vitaliifedan.task10.dao.AbstractCrudDao;
 import com.foxminded.vitaliifedan.task10.dao.GroupDao;
+import com.foxminded.vitaliifedan.task10.exceptions.GroupException;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
@@ -19,12 +20,13 @@ public class GroupDaoImpl extends AbstractCrudDao<Group, Integer> implements Gro
 
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
     public GroupDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    protected Group create(Group entity) throws SQLException {
+    protected Group create(Group entity) {
         String createGroup = "INSERT INTO groups(group_name) VALUES(?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         int affectedRow = jdbcTemplate.update(connection -> {
@@ -33,28 +35,28 @@ public class GroupDaoImpl extends AbstractCrudDao<Group, Integer> implements Gro
             return statement;
         }, keyHolder);
         if (affectedRow == 0) {
-            throw new SQLException("Group " + entity.getGroupName() + " was not created");
+            throw new GroupException("Group " + entity.getGroupName() + " was not created");
         }
         int id = (int) keyHolder.getKeys().get("id");
         return new Group(id, entity.getGroupName());
     }
 
     @Override
-    protected Group update(Group entity) throws SQLException {
+    protected Group update(Group entity) {
         String updateGroup = "UPDATE groups SET group_name=? WHERE id=?";
         int affectedRow = jdbcTemplate.update(updateGroup, entity.getGroupName(), entity.getId());
         if (affectedRow == 0) {
-            throw new SQLException("Group " + entity.getGroupName() + " was not updated");
+            throw new GroupException("Group " + entity.getGroupName() + " was not updated");
         }
         return new Group(entity.getId(), entity.getGroupName());
     }
 
     @Override
-    public Boolean delete(Integer id) throws SQLException {
+    public Boolean delete(Integer id) {
         String deleteGroup = "DELETE FROM groups WHERE id=?";
         int affectedRow = jdbcTemplate.update(deleteGroup, id);
         if (affectedRow == 0) {
-            throw new SQLException("Group with id " + id + " was not deleted");
+            throw new GroupException("Group with id " + id + " was not deleted");
         }
         return true;
     }
