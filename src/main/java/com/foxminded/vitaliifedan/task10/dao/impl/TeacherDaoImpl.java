@@ -1,4 +1,4 @@
-package com.foxminded.vitaliifedan.task10.dao.daoImpl;
+package com.foxminded.vitaliifedan.task10.dao.impl;
 
 import com.foxminded.vitaliifedan.task10.dao.TeacherDao;
 import com.foxminded.vitaliifedan.task10.exceptions.UserException;

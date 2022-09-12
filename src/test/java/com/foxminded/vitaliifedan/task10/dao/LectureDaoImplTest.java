@@ -1,7 +1,7 @@
 package com.foxminded.vitaliifedan.task10.dao;
 
 import com.foxminded.vitaliifedan.task10.containers.BaseDaoTest;
-import com.foxminded.vitaliifedan.task10.dao.daoImpl.LectureDaoImpl;
+import com.foxminded.vitaliifedan.task10.dao.impl.LectureDaoImpl;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
 import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;

@@ -1,4 +1,4 @@
-package com.foxminded.vitaliifedan.task10.services.servicesImpl;
+package com.foxminded.vitaliifedan.task10.services.impl;
 
 import com.foxminded.vitaliifedan.task10.dao.StudentDao;
 import com.foxminded.vitaliifedan.task10.dao.TeacherDao;

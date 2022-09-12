@@ -1,7 +1,7 @@
 package com.foxminded.vitaliifedan.task10.dao;
 
 import com.foxminded.vitaliifedan.task10.containers.BaseDaoTest;
-import com.foxminded.vitaliifedan.task10.dao.daoImpl.AudienceDaoImpl;
+import com.foxminded.vitaliifedan.task10.dao.impl.AudienceDaoImpl;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
