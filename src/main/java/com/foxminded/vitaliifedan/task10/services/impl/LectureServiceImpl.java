@@ -1,8 +1,11 @@
 package com.foxminded.vitaliifedan.task10.services.impl;
 
 import com.foxminded.vitaliifedan.task10.dao.LectureDao;
+import com.foxminded.vitaliifedan.task10.exceptions.LectureException;
 import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
 import com.foxminded.vitaliifedan.task10.services.LectureService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +15,8 @@ import java.util.Optional;
 
 @Service
 public class LectureServiceImpl implements LectureService {
+
+    private static final Logger logger = LoggerFactory.getLogger(LectureServiceImpl.class);
 
     private final LectureDao lectureDao;
 
@@ -32,16 +37,31 @@ public class LectureServiceImpl implements LectureService {
 
     @Transactional
     public Lecture create(Lecture lecture) {
-        return lectureDao.save(lecture);
+        try {
+            return lectureDao.save(lecture);
+        } catch (LectureException e) {
+            logger.error("Exception happened when Lecture is creating", e);
+        }
+        return null;
     }
 
     @Transactional
     public Lecture update(Lecture lecture) {
-        return lectureDao.save(lecture);
+        try {
+            return lectureDao.save(lecture);
+        } catch (LectureException e) {
+            logger.error("Exception happened when Lecture is updating", e);
+        }
+        return null;
     }
 
     @Transactional
     public Boolean deletedById(Integer id) {
-        return lectureDao.delete(id);
+        try {
+            return lectureDao.delete(id);
+        } catch (LectureException e) {
+            logger.error("Exception happened when Lecture is deleting", e);
+        }
+        return false;
     }
 }

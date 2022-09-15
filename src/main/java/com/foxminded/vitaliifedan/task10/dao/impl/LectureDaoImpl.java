@@ -5,6 +5,8 @@ import com.foxminded.vitaliifedan.task10.dao.LectureDao;
 import com.foxminded.vitaliifedan.task10.dao.rowMappers.LectureRowMapper;
 import com.foxminded.vitaliifedan.task10.exceptions.LectureException;
 import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,6 +22,9 @@ import java.util.Optional;
 @Component
 public class LectureDaoImpl extends AbstractCrudDao<Lecture, Integer> implements LectureDao {
 
+    private static final Logger logger = LoggerFactory.getLogger(LectureDaoImpl.class);
+
+
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -29,6 +34,7 @@ public class LectureDaoImpl extends AbstractCrudDao<Lecture, Integer> implements
 
     @Override
     protected Lecture create(Lecture entity) {
+        logger.info("Start creating Lecture name={}, date={}", entity.getCourse().getCourseName(), entity.getLectureDate());
         String createLecture = "INSERT INTO lecture(course_id, teacher_id, lecture_date, group_id, pair_number, audience_id)" +
                 "VALUES(?, ?, ?, ?, ?, ?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
@@ -47,12 +53,14 @@ public class LectureDaoImpl extends AbstractCrudDao<Lecture, Integer> implements
                     + entity.getLectureDate().toString() + " was not created");
         }
         int id = (int) keyHolder.getKeys().get("id");
+        logger.info("Finish creating Lecture name={}, date={}", entity.getCourse().getCourseName(), entity.getLectureDate());
         return new Lecture(id, entity.getCourse(), entity.getTeacher(), entity.getLectureDate(),
                 entity.getGroup(), entity.getPairNumber(), entity.getAudience());
     }
 
     @Override
     protected Lecture update(Lecture entity) {
+        logger.info("Start updating Lecture name={}, date={}", entity.getCourse().getCourseName(), entity.getLectureDate());
         String updateLecture = "UPDATE lecture SET course_id=?, teacher_id=?, lecture_date=?, " +
                 "group_id=?, pair_number=?, audience_id=? WHERE id=?";
         int affectedRow = jdbcTemplate.update(updateLecture, entity.getCourse().getId(), entity.getTeacher().getId(),
@@ -62,17 +70,20 @@ public class LectureDaoImpl extends AbstractCrudDao<Lecture, Integer> implements
             throw new LectureException("Lecture " + entity.getCourse().getCourseName() + ", "
                     + entity.getLectureDate().toString() + " was not updated");
         }
+        logger.info("Finish creating Lecture name={}, date={}", entity.getCourse().getCourseName(), entity.getLectureDate());
         return new Lecture(entity.getId(), entity.getCourse(), entity.getTeacher(), entity.getLectureDate(),
                 entity.getGroup(), entity.getPairNumber(), entity.getAudience());
     }
 
     @Override
     public Boolean delete(Integer id) {
+        logger.info("Start deleting Lecture id={}", id);
         String deleteLecture = "DELETE FROM lecture WHERE id=?";
         int affectedRow = jdbcTemplate.update(deleteLecture, id);
         if (affectedRow == 0) {
             throw new LectureException("Lecture with id " + id + " was not deleted");
         }
+        logger.info("Finish deleting Lecture id={}", id);
         return true;
     }
 

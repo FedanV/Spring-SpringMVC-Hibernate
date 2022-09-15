@@ -23,4 +23,7 @@ public class Student extends User {
         super(id);
         this.group = group;
     }
+
+    public Student() {
+    }
 }

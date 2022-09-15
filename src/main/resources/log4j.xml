@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration debug="false">
+
+    <appender name="task10" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="/logs/task10/task10.log"/>
+        <param name="Append" value="true"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd'.log'"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} [%-5p][%30c{-2}] - %m %throwable%n"/>
+        </layout>
+    </appender>
+
+    <appender name="application" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="/logs/application/application.log"/>
+        <param name="MaxFileSize" value="100MB"/>
+        <param name="MaxBackupIndex" value="10"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} [%-5p][%30c] - %m %throwable%n"/>
+        </layout>
+    </appender>
+
+    <logger name="com.foxminded.vitaliifedan.task10">
+        <level value="INFO"/>
+        <appender-ref ref="task10"/>
+    </logger>
+
+    <root>
+        <priority value="DEBUG"/>
+        <appender-ref ref="application" />
+    </root>
+
+</log4j:configuration>

@@ -3,11 +3,14 @@ package com.foxminded.vitaliifedan.task10.services.impl;
 import com.foxminded.vitaliifedan.task10.dao.StudentDao;
 import com.foxminded.vitaliifedan.task10.dao.TeacherDao;
 import com.foxminded.vitaliifedan.task10.dao.UserDao;
+import com.foxminded.vitaliifedan.task10.exceptions.UserException;
 import com.foxminded.vitaliifedan.task10.models.persons.Student;
 import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,8 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserDao userDao;
     private final StudentDao studentDao;
@@ -46,46 +51,91 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public User create(User user) {
-        return userDao.save(user);
+        try {
+            return userDao.save(user);
+        } catch (UserException e) {
+            logger.error("Exception happened when User is creating", e);
+        }
+        return null;
     }
 
     @Transactional
     public User update(User user) {
-        return userDao.save(user);
+        try {
+            return userDao.save(user);
+        } catch (UserException e) {
+            logger.error("Exception happened when User is updating", e);
+        }
+        return null;
     }
 
     @Transactional
     public Boolean deletedById(Integer id) {
-        return userDao.delete(id);
+        try {
+            return userDao.delete(id);
+        } catch (UserException e) {
+            logger.error("Exception happened when User is deleting", e);
+        }
+        return false;
     }
 
     @Transactional
     public Student addGroupToStudent(Integer userId, Integer groupId) {
-        return studentDao.addGroupToStudent(userId, groupId);
+        try {
+            return studentDao.addGroupToStudent(userId, groupId);
+        } catch (UserException e) {
+            logger.error("Exception happened when Group is adding to student", e);
+        }
+        return null;
     }
 
     @Transactional
     public Boolean removeStudentFromGroup(Integer userId) {
-        return studentDao.removeStudentFromGroup(userId);
+        try {
+            return studentDao.removeStudentFromGroup(userId);
+        } catch (UserException e) {
+            logger.error("Exception happened when removing Student from Group", e);
+        }
+        return null;
     }
 
     @Transactional
     public Student updateGroupForStudent(Integer userId, Integer groupId) {
-        return studentDao.updateGroupForStudentId(userId, groupId);
+        try {
+            return studentDao.updateGroupForStudentId(userId, groupId);
+        } catch (UserException e) {
+            logger.error("Exception happened when updating group", e);
+        }
+        return null;
     }
 
     @Transactional
     public Teacher addCourseToTeacher(Integer teacherId, Integer courseId) {
-        return teacherDao.addCourseToTeacher(teacherId, courseId);
+        try {
+            return teacherDao.addCourseToTeacher(teacherId, courseId);
+        } catch (UserException e) {
+            logger.error("Exception happened when adding Course to Teacher", e);
+        }
+        return null;
     }
 
     @Transactional
     public Boolean removeCourseFromTeacher(Integer teacherId, Integer courseId) {
-        return teacherDao.removeCourseByTeacherId(teacherId, courseId);
+        try {
+            return teacherDao.removeCourseByTeacherId(teacherId, courseId);
+        } catch (UserException e) {
+            logger.error("Exception happened when removing Teacher course", e);
+        }
+        return false;
     }
 
     @Transactional
     public Teacher updateCourseForTeacher(Integer teacherId, Integer newCourseId, Integer oldCourseId) {
-        return teacherDao.updateCourseForTeacherId(teacherId, newCourseId, oldCourseId);
+        try {
+            return teacherDao.updateCourseForTeacherId(teacherId, newCourseId, oldCourseId);
+        } catch (UserException e) {
+            logger.error("Exception happened when updating Teacher course", e);
+        }
+        return null;
     }
 }

@@ -5,6 +5,8 @@ import com.foxminded.vitaliifedan.task10.dao.AbstractCrudDao;
 import com.foxminded.vitaliifedan.task10.dao.CourseDao;
 import com.foxminded.vitaliifedan.task10.exceptions.CourseException;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,6 +21,8 @@ import java.util.Optional;
 @Component
 public class CourseDaoImpl extends AbstractCrudDao<Course, Integer> implements CourseDao {
 
+    private static final Logger logger = LoggerFactory.getLogger(CourseDaoImpl.class);
+
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -28,6 +32,7 @@ public class CourseDaoImpl extends AbstractCrudDao<Course, Integer> implements C
 
     @Override
     protected Course create(Course entity) {
+        logger.info("Start creating Course {}", entity.getCourseName());
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         String createCourse = "INSERT INTO course(course_name) VALUES(?)";
         int affectedRow = jdbcTemplate.update(connection -> {
@@ -39,26 +44,31 @@ public class CourseDaoImpl extends AbstractCrudDao<Course, Integer> implements C
             throw new CourseException("Course " + entity.getCourseName() + " was not create");
         }
         int id = (int) keyHolder.getKeys().get("id");
+        logger.info("Finish creating Course {}", entity.getCourseName());
         return new Course(id, entity.getCourseName());
     }
 
     @Override
     protected Course update(Course entity) {
+        logger.info("Start updating Course {}", entity.getCourseName());
         String updateCourse = "UPDATE course SET course_name=? WHERE id=?";
         int affectedRow = jdbcTemplate.update(updateCourse, entity.getCourseName(), entity.getId());
         if (affectedRow == 0) {
             throw new CourseException("Course " + entity.getCourseName() + " was not updated");
         }
+        logger.info("Finish updating Course {}", entity.getCourseName());
         return new Course(entity.getId(), entity.getCourseName());
     }
 
     @Override
     public Boolean delete(Integer id) {
+        logger.info("Start deleting Course id={}", id);
         String deleteCourse = "DELETE FROM course WHERE id=?";
         int affectedRow = jdbcTemplate.update(deleteCourse, id);
         if (affectedRow == 0) {
             throw new CourseException("Course with id " + id + " was not deleted");
         }
+        logger.info("Finish deleting Course id={}", id);
         return true;
     }
 

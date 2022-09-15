@@ -1,8 +1,11 @@
 package com.foxminded.vitaliifedan.task10.services.impl;
 
 import com.foxminded.vitaliifedan.task10.dao.AudienceDao;
+import com.foxminded.vitaliifedan.task10.exceptions.AudienceException;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
 import com.foxminded.vitaliifedan.task10.services.AudienceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +15,8 @@ import java.util.Optional;
 
 @Service
 public class AudienceServiceImpl implements AudienceService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AudienceServiceImpl.class);
 
     private final AudienceDao audienceDao;
 
@@ -32,16 +37,31 @@ public class AudienceServiceImpl implements AudienceService {
 
     @Transactional
     public Audience create(Audience audience) {
-        return audienceDao.save(audience);
+        try {
+            return audienceDao.save(audience);
+        } catch (AudienceException e) {
+            logger.error("Exception happened when Audience is creating", e);
+        }
+        return null;
     }
 
     @Transactional
     public Audience update(Audience audience) {
-        return audienceDao.save(audience);
+        try {
+            return audienceDao.save(audience);
+        } catch (AudienceException e) {
+            logger.error("Exception happened when Audience is updating ", e);
+        }
+        return null;
     }
 
     @Transactional
     public Boolean deletedById(Integer id) {
-        return audienceDao.delete(id);
+        try {
+            return audienceDao.delete(id);
+        } catch (AudienceException e) {
+            logger.error("Exception happened when Audience is deleting", e);
+        }
+        return false;
     }
 }
