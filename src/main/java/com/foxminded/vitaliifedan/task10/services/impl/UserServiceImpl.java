@@ -55,8 +55,8 @@ public class UserServiceImpl implements UserService {
             return userDao.save(user);
         } catch (UserException e) {
             logger.error("Exception happened when User is creating", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -65,8 +65,8 @@ public class UserServiceImpl implements UserService {
             return userDao.save(user);
         } catch (UserException e) {
             logger.error("Exception happened when User is updating", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -75,8 +75,8 @@ public class UserServiceImpl implements UserService {
             return userDao.delete(id);
         } catch (UserException e) {
             logger.error("Exception happened when User is deleting", e);
+            throw e;
         }
-        return false;
     }
 
     @Transactional
@@ -85,8 +85,8 @@ public class UserServiceImpl implements UserService {
             return studentDao.addGroupToStudent(userId, groupId);
         } catch (UserException e) {
             logger.error("Exception happened when Group is adding to student", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -95,8 +95,8 @@ public class UserServiceImpl implements UserService {
             return studentDao.removeStudentFromGroup(userId);
         } catch (UserException e) {
             logger.error("Exception happened when removing Student from Group", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -105,8 +105,8 @@ public class UserServiceImpl implements UserService {
             return studentDao.updateGroupForStudentId(userId, groupId);
         } catch (UserException e) {
             logger.error("Exception happened when updating group", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -115,8 +115,8 @@ public class UserServiceImpl implements UserService {
             return teacherDao.addCourseToTeacher(teacherId, courseId);
         } catch (UserException e) {
             logger.error("Exception happened when adding Course to Teacher", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -125,8 +125,8 @@ public class UserServiceImpl implements UserService {
             return teacherDao.removeCourseByTeacherId(teacherId, courseId);
         } catch (UserException e) {
             logger.error("Exception happened when removing Teacher course", e);
+            throw e;
         }
-        return false;
     }
 
     @Transactional
@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
             return teacherDao.updateCourseForTeacherId(teacherId, newCourseId, oldCourseId);
         } catch (UserException e) {
             logger.error("Exception happened when updating Teacher course", e);
+            throw e;
         }
-        return null;
     }
 }

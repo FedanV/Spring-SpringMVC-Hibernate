@@ -41,8 +41,8 @@ public class AudienceServiceImpl implements AudienceService {
             return audienceDao.save(audience);
         } catch (AudienceException e) {
             logger.error("Exception happened when Audience is creating", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -51,8 +51,8 @@ public class AudienceServiceImpl implements AudienceService {
             return audienceDao.save(audience);
         } catch (AudienceException e) {
             logger.error("Exception happened when Audience is updating ", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -61,7 +61,7 @@ public class AudienceServiceImpl implements AudienceService {
             return audienceDao.delete(id);
         } catch (AudienceException e) {
             logger.error("Exception happened when Audience is deleting", e);
+            throw e;
         }
-        return false;
     }
 }

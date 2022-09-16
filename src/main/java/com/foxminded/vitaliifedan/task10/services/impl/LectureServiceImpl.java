@@ -41,8 +41,8 @@ public class LectureServiceImpl implements LectureService {
             return lectureDao.save(lecture);
         } catch (LectureException e) {
             logger.error("Exception happened when Lecture is creating", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -51,8 +51,8 @@ public class LectureServiceImpl implements LectureService {
             return lectureDao.save(lecture);
         } catch (LectureException e) {
             logger.error("Exception happened when Lecture is updating", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -61,7 +61,7 @@ public class LectureServiceImpl implements LectureService {
             return lectureDao.delete(id);
         } catch (LectureException e) {
             logger.error("Exception happened when Lecture is deleting", e);
+            throw e;
         }
-        return false;
     }
 }

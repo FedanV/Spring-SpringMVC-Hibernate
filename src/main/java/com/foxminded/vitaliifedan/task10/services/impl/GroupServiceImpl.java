@@ -40,8 +40,8 @@ public class GroupServiceImpl implements GroupService {
             return groupDao.save(group);
         } catch (GroupException e) {
             logger.error("Exception happened when Group is creating", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -50,8 +50,8 @@ public class GroupServiceImpl implements GroupService {
             return groupDao.save(group);
         } catch (GroupException e) {
             logger.error("Exception happened when Group is updating", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -60,7 +60,7 @@ public class GroupServiceImpl implements GroupService {
             return groupDao.delete(id);
         } catch (GroupException e) {
             logger.error("Exception happened when Group is deleting", e);
+            throw e;
         }
-        return false;
     }
 }

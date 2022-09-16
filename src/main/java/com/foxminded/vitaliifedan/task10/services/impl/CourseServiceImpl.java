@@ -41,8 +41,8 @@ public class CourseServiceImpl implements CourseService {
             return courseDao.save(course);
         } catch (CourseException e) {
             logger.error("Exception happened when Course is creating", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -51,8 +51,8 @@ public class CourseServiceImpl implements CourseService {
             return courseDao.save(course);
         } catch (CourseException e) {
             logger.error("Exception happened when Course is updating", e);
+            throw e;
         }
-        return null;
     }
 
     @Transactional
@@ -61,7 +61,7 @@ public class CourseServiceImpl implements CourseService {
             return courseDao.delete(id);
         } catch (CourseException e) {
             logger.error("Exception happened when Course is deleting", e);
+            throw e;
         }
-        return false;
     }
 }
