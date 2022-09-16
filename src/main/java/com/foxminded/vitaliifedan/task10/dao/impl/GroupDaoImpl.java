@@ -31,7 +31,7 @@ public class GroupDaoImpl extends AbstractCrudDao<Group, Integer> implements Gro
 
     @Override
     protected Group create(Group entity) {
-        logger.info("Start creating Group {}", entity.getGroupName());
+        logger.debug("Start creating Group {}", entity.getGroupName());
         String createGroup = "INSERT INTO groups(group_name) VALUES(?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         int affectedRow = jdbcTemplate.update(connection -> {
@@ -43,31 +43,31 @@ public class GroupDaoImpl extends AbstractCrudDao<Group, Integer> implements Gro
             throw new GroupException("Group " + entity.getGroupName() + " was not created");
         }
         int id = (int) keyHolder.getKeys().get("id");
-        logger.info("Finish creating Group {}", entity.getGroupName());
+        logger.debug("Finish creating Group {}", entity.getGroupName());
         return new Group(id, entity.getGroupName());
     }
 
     @Override
     protected Group update(Group entity) {
-        logger.info("Start updating Group {}", entity.getGroupName());
+        logger.debug("Start updating Group {}", entity.getGroupName());
         String updateGroup = "UPDATE groups SET group_name=? WHERE id=?";
         int affectedRow = jdbcTemplate.update(updateGroup, entity.getGroupName(), entity.getId());
         if (affectedRow == 0) {
             throw new GroupException("Group " + entity.getGroupName() + " was not updated");
         }
-        logger.info("Finish updating Group {}", entity.getGroupName());
+        logger.debug("Finish updating Group {}", entity.getGroupName());
         return new Group(entity.getId(), entity.getGroupName());
     }
 
     @Override
     public Boolean delete(Integer id) {
-        logger.info("Start updating Group id={}", id);
+        logger.debug("Start updating Group id={}", id);
         String deleteGroup = "DELETE FROM groups WHERE id=?";
         int affectedRow = jdbcTemplate.update(deleteGroup, id);
         if (affectedRow == 0) {
             throw new GroupException("Group with id " + id + " was not deleted");
         }
-        logger.info("Finish updating Group id={}", id);
+        logger.debug("Finish updating Group id={}", id);
         return true;
     }
 

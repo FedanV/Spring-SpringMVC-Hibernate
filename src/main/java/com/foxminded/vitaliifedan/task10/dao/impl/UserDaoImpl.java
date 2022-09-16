@@ -32,7 +32,7 @@ public class UserDaoImpl extends AbstractCrudDao<User, Integer> implements UserD
 
     @Override
     protected User create(User entity) {
-        logger.info("Start creating user with login {}", entity.getLogin());
+        logger.debug("Start creating user with login {}", entity.getLogin());
         String createUser = "INSERT INTO users(login, password, role, user_type) VALUES(?, ?, ?, ?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         int affectedRow = jdbcTemplate.update(connection -> {
@@ -47,32 +47,32 @@ public class UserDaoImpl extends AbstractCrudDao<User, Integer> implements UserD
             throw new UserException("User with login " + entity.getLogin() + " was not created");
         }
         int id = (int) keyHolder.getKeys().get("id");
-        logger.info("Finish creating user with login {}", entity.getLogin());
+        logger.debug("Finish creating user with login {}", entity.getLogin());
         return new User(id, entity.getLogin(), entity.getPassword(), entity.getRole(), entity.getUserType());
     }
 
     @Override
     protected User update(User entity) {
-        logger.info("Start updating user with login {}", entity.getLogin());
+        logger.debug("Start updating user with login {}", entity.getLogin());
         String updateUser = "UPDATE users SET login=?, password=?, role=?, user_type=? WHERE id=?";
         int affectedRow = jdbcTemplate.update(updateUser, entity.getLogin(), entity.getPassword(),
                 entity.getRole().toString(), entity.getUserType().toString(), entity.getId());
         if (affectedRow == 0) {
             throw new UserException("User with login " + entity.getLogin() + " was not updated");
         }
-        logger.info("Finish updating user with login {}", entity.getLogin());
+        logger.debug("Finish updating user with login {}", entity.getLogin());
         return new User(entity.getId(), entity.getLogin(), entity.getPassword(), entity.getRole(), entity.getUserType());
     }
 
     @Override
     public Boolean delete(Integer id) {
-        logger.info("Start deleting user with id={}", id);
+        logger.debug("Start deleting user with id={}", id);
         String deleteUser = "DELETE FROM users WHERE id=?";
         int affectedRow = jdbcTemplate.update(deleteUser, id);
         if (affectedRow == 0) {
             throw new UserException("User with id " + id + " was not deleted");
         }
-        logger.info("Finish deleting user with id={}", id);
+        logger.debug("Finish deleting user with id={}", id);
         return true;
     }
 
