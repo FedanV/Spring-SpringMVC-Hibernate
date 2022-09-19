@@ -14,6 +14,7 @@ public class LectureRowMapper implements RowMapper<Lecture> {
     @Override
     public Lecture mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new Lecture(
+                rs.getInt("id"),
                 new Course(rs.getInt("course_id")),
                 new Teacher(rs.getInt("teacher_id")),
                 rs.getDate("lecture_date").toLocalDate(),

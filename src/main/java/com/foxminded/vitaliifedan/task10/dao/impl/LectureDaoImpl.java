@@ -8,7 +8,6 @@ import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
@@ -97,7 +96,7 @@ public class LectureDaoImpl extends AbstractCrudDao<Lecture, Integer> implements
     @Override
     public Optional<Lecture> getById(Integer id) {
         String getLectureById = "SELECT * FROM lecture WHERE id=?";
-        return jdbcTemplate.query(getLectureById, new BeanPropertyRowMapper<>(Lecture.class), id)
+        return jdbcTemplate.query(getLectureById, new LectureRowMapper(), id)
                 .stream().findFirst();
     }
 
