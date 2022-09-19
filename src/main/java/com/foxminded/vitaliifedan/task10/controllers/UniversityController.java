@@ -77,11 +77,11 @@ public class UniversityController {
     @GetMapping("/lectures")
     public String getLectures(Model model) {
         List<Lecture> lectures = lectureService.findAll();
-        List<Map<String, String>> filledLectures = new ArrayList<>();
-        for(Lecture lecture : lectures) {
-            filledLectures.add(lectureService.getFilledLecture(lecture.getId()));
-        }
-        if (!filledLectures.isEmpty()) {
+        if (!lectures.isEmpty()) {
+            List<Map<String, String>> filledLectures = new ArrayList<>();
+            for (Lecture lecture : lectures) {
+                filledLectures.add(lectureService.getFilledLecture(lecture.getId()));
+            }
             model.addAttribute("lectures", filledLectures);
         } else {
             model.addAttribute("emptyLectures", true);
