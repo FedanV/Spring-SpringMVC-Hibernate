@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="university/index.html :: headField(title='Users')"></head>
+<body>
+<div class="container text-center">
+
+    <div th:replace="university/index.html :: header"></div>
+
+    <table th:if="${users}" class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th scope="col">№</th>
+            <th scope="col">Name</th>
+            <th scope="col">Surname</th>
+            <th scope="col">age</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Login</th>
+            <th scope="col">Password</th>
+            <th scope="col">Role</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user, state : ${users}">
+            <th scope="row" th:text="${state.index} + 1">index</th>
+            <td th:text="${user.getName()}">User name</td>
+            <td th:text="${user.getSurname()}">User surname</td>
+            <td th:text="${user.getAge()}">User age</td>
+            <td th:text="${user.getPhone()}">User phone</td>
+            <td th:text="${user.getLogin()}">User login</td>
+            <td th:text="${user.getPassword}">User password</td>
+            <td th:text="${user.getRole()}">User role</td>
+        </tr>
+        </tbody>
+    </table>
+    <h1 th:unless="${users}">No users yet</h1>
+
+</div>
+<div th:replace="university/index :: bootstrap_bundle_min_js"></div>
+</body>
+</html>
