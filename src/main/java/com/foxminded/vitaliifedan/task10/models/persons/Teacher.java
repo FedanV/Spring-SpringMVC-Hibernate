@@ -28,4 +28,9 @@ public class Teacher extends User {
         super(id);
         this.courses = courses;
     }
+
+    public Teacher() {
+
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.foxminded.vitaliifedan.task10.dao.rowMappers;
+package com.foxminded.vitaliifedan.task10.dao.mappers;
 
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
 import com.foxminded.vitaliifedan.task10.models.persons.Teacher;

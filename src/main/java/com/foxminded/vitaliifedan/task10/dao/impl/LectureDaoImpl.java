@@ -2,7 +2,7 @@ package com.foxminded.vitaliifedan.task10.dao.impl;
 
 import com.foxminded.vitaliifedan.task10.dao.AbstractCrudDao;
 import com.foxminded.vitaliifedan.task10.dao.LectureDao;
-import com.foxminded.vitaliifedan.task10.dao.rowMappers.LectureRowMapper;
+import com.foxminded.vitaliifedan.task10.dao.mappers.LectureRowMapper;
 import com.foxminded.vitaliifedan.task10.exceptions.LectureException;
 import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
 import org.slf4j.Logger;

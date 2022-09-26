@@ -1,26 +1,42 @@
 package com.foxminded.vitaliifedan.task10.controllers;
 
+import com.foxminded.vitaliifedan.task10.dto.LectureDTO;
+import com.foxminded.vitaliifedan.task10.models.groups.Group;
+import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
+import com.foxminded.vitaliifedan.task10.models.persons.UserType;
+import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
+import com.foxminded.vitaliifedan.task10.models.schedules.Course;
 import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
-import com.foxminded.vitaliifedan.task10.services.LectureService;
+import com.foxminded.vitaliifedan.task10.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/lectures")
 public class LectureController {
 
     private final LectureService lectureService;
+    private final CourseService courseService;
+    private final UserService userService;
+    private final GroupService groupService;
+    private final AudienceService audienceService;
 
     @Autowired
-    public LectureController(LectureService lectureService) {
+    public LectureController(LectureService lectureService, CourseService courseService, UserService userService, GroupService groupService, AudienceService audienceService) {
         this.lectureService = lectureService;
+        this.courseService = courseService;
+        this.userService = userService;
+        this.groupService = groupService;
+        this.audienceService = audienceService;
     }
 
 
@@ -34,6 +50,80 @@ public class LectureController {
             }
             model.addAttribute("lectures", filledLectures);
         }
-        return "university/lecture";
+        return "university/lectures/allLectures";
+    }
+
+    @GetMapping("/add")
+    public String addLecture(@ModelAttribute("lecture") LectureDTO lecture, Model model) {
+        model.addAttribute("courses", courseService.findAll());
+        model.addAttribute("teachers", userService.getUserByUserType(UserType.TEACHER));
+        model.addAttribute("groups", groupService.findAll());
+        model.addAttribute("audiences", audienceService.findAll());
+        return "university/lectures/addLecture";
+    }
+
+    @PostMapping("/add")
+    public String saveLecture(@ModelAttribute LectureDTO lectureDTO) {
+        Lecture lecture = new Lecture(
+                new Course(lectureDTO.getCourseId()),
+                new Teacher(lectureDTO.getTeacherId()),
+                LocalDate.parse(lectureDTO.getDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                new Group(lectureDTO.getGroupId()),
+                lectureDTO.getPairNumber(),
+                new Audience(lectureDTO.getAudienceId())
+        );
+        lectureService.create(lecture);
+        return "redirect:/lectures";
+    }
+
+    @GetMapping("/{id}")
+    public String showLecture(@PathVariable("id") Integer id, Model model) {
+        model.addAttribute("lecture", lectureService.getFilledLecture(id));
+        return "university/lectures/showLecture";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editLecture(@PathVariable("id") Integer id, Model model) {
+        Optional<Lecture> lecture = lectureService.findById(id);
+        if(lecture.isPresent()) {
+            LectureDTO lectureDTO = new LectureDTO(
+                    lecture.get().getId(),
+                    lecture.get().getCourse().getId(),
+                    lecture.get().getTeacher().getId(),
+                    lecture.get().getGroup().getId(),
+                    lecture.get().getAudience().getId(),
+                    lecture.get().getLectureDate().toString(),
+                    lecture.get().getAudience().getId()
+            );
+            model.addAttribute("lecture", lectureDTO);
+        } else {
+            model.addAttribute("lecture", new LectureDTO());
+        }
+        model.addAttribute("courses", courseService.findAll());
+        model.addAttribute("teachers", userService.getUserByUserType(UserType.TEACHER));
+        model.addAttribute("groups", groupService.findAll());
+        model.addAttribute("audiences", audienceService.findAll());
+        return "university/lectures/editLecture";
+    }
+
+    @PatchMapping("/{id}")
+    public String updateLecture(@PathVariable("id") Integer id, @ModelAttribute LectureDTO lectureDTO) {
+        Lecture lecture = new Lecture(
+                id,
+                new Course(lectureDTO.getCourseId()),
+                new Teacher(lectureDTO.getTeacherId()),
+                LocalDate.parse(lectureDTO.getDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                new Group(lectureDTO.getGroupId()),
+                lectureDTO.getPairNumber(),
+                new Audience(lectureDTO.getAudienceId())
+        );
+        lectureService.update(lecture);
+        return "redirect:/lectures/" + id;
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteLecture(@PathVariable("id") Integer id) {
+        lectureService.deletedById(id);
+        return "redirect:/lectures";
     }
 }

@@ -5,8 +5,7 @@ import com.foxminded.vitaliifedan.task10.services.AudienceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,6 +24,41 @@ public class AudienceController {
     public String getAudiences(Model model) {
         List<Audience> audiences = audienceService.findAll();
         model.addAttribute("audiences", audiences);
-        return "university/audience";
+        return "university/audiences/allAudiences";
+    }
+
+    @GetMapping("/add")
+    public String addAudience(@ModelAttribute Audience audience) {
+        return "university/audiences/addAudience";
+    }
+
+    @PostMapping("/addAudience")
+    public String saveAudience(@ModelAttribute Audience audience) {
+        audienceService.create(audience);
+        return "redirect:/audiences";
+    }
+
+    @GetMapping("/{id}")
+    public String showAudience(@PathVariable("id") Integer id, Model model) {
+        audienceService.findById(id).ifPresent(entity -> model.addAttribute("audience", entity));
+        return "university/audiences/showAudience";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editAudience(@PathVariable("id") Integer id, Model model) {
+        audienceService.findById(id).ifPresent(entity -> model.addAttribute("audience", entity));
+        return "university/audiences/editAudience";
+    }
+
+    @PatchMapping("/{id}")
+    public String updateAudience(@PathVariable("id") Integer id, @ModelAttribute("audience") Audience audience) {
+        audienceService.update(audience);
+        return "redirect:/audience/" + id;
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteAudience(@PathVariable("id") Integer id) {
+        audienceService.deletedById(id);
+        return "redirect:/audiences";
     }
 }

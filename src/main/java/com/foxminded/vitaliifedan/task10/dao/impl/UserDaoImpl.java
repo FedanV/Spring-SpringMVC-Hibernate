@@ -33,14 +33,16 @@ public class UserDaoImpl extends AbstractCrudDao<User, Integer> implements UserD
     @Override
     protected User create(User entity) {
         logger.debug("Start creating user with login {}", entity.getLogin());
-        String createUser = "INSERT INTO users(login, password, role, user_type) VALUES(?, ?, ?, ?)";
+        String createUser = "INSERT INTO users(name, surname, login, password, role, user_type) VALUES(?, ?, ?, ?, ?, ?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         int affectedRow = jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(createUser, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, entity.getLogin());
-            statement.setString(2, entity.getPassword());
-            statement.setString(3, entity.getRole().toString());
-            statement.setString(4, entity.getUserType().toString());
+            statement.setString(1, entity.getName());
+            statement.setString(2, entity.getSurname());
+            statement.setString(3, entity.getLogin());
+            statement.setString(4, entity.getPassword());
+            statement.setString(5, entity.getRole().toString());
+            statement.setString(6, entity.getUserType().toString());
             return statement;
         }, keyHolder);
         if (affectedRow == 0) {
@@ -54,8 +56,8 @@ public class UserDaoImpl extends AbstractCrudDao<User, Integer> implements UserD
     @Override
     protected User update(User entity) {
         logger.debug("Start updating user with login {}", entity.getLogin());
-        String updateUser = "UPDATE users SET login=?, password=?, role=?, user_type=? WHERE id=?";
-        int affectedRow = jdbcTemplate.update(updateUser, entity.getLogin(), entity.getPassword(),
+        String updateUser = "UPDATE users SET name=?, surname=?, login=?, password=?, role=?, user_type=? WHERE id=?";
+        int affectedRow = jdbcTemplate.update(updateUser, entity.getName(), entity.getSurname(), entity.getLogin(), entity.getPassword(),
                 entity.getRole().toString(), entity.getUserType().toString(), entity.getId());
         if (affectedRow == 0) {
             throw new UserException("User with login " + entity.getLogin() + " was not updated");

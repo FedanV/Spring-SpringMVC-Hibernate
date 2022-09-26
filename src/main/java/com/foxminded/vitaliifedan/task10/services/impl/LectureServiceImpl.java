@@ -3,7 +3,6 @@ package com.foxminded.vitaliifedan.task10.services.impl;
 import com.foxminded.vitaliifedan.task10.dao.LectureDao;
 import com.foxminded.vitaliifedan.task10.exceptions.LectureException;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
-import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
 import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
 import com.foxminded.vitaliifedan.task10.services.*;
@@ -93,7 +92,7 @@ public class LectureServiceImpl implements LectureService {
                     .map(Group::getGroupName).orElse(null);
 
             String audience = audienceService.findById(lecture.get().getAudience().getId())
-                    .map(a-> String.valueOf(a.getRoomNumber())).orElse(null);
+                    .map(a -> String.valueOf(a.getRoomNumber())).orElse(null);
 
             filledLecture.put("course", courseName);
             filledLecture.put("teacher", teacherName);
@@ -101,8 +100,8 @@ public class LectureServiceImpl implements LectureService {
             filledLecture.put("group", groupName);
             filledLecture.put("pair", lecture.get().getPairNumber().toString());
             filledLecture.put("audience", audience);
+            filledLecture.put("id", lecture.get().getId().toString());
         }
-
         return filledLecture;
     }
 }

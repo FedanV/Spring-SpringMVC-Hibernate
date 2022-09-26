@@ -10,8 +10,6 @@ public class User extends IntegerId {
 
     private String name;
     private String surname;
-    private Integer age;
-    private String phone;
     private String login;
     private String password;
     private Role role;
