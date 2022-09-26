@@ -1,7 +1,9 @@
 package com.foxminded.vitaliifedan.task10.controllers;
 
+import com.foxminded.vitaliifedan.task10.exceptions.CourseException;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
 import com.foxminded.vitaliifedan.task10.services.CourseService;
+import com.foxminded.vitaliifedan.task10.services.validators.CourseValidationService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ class CourseControllerTest {
 
     @MockBean
     private CourseService courseService;
+    @MockBean
+    private CourseValidationService courseValidationService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -48,6 +52,7 @@ class CourseControllerTest {
 
     @Test
     void saveCourse() throws Exception {
+        Mockito.doReturn("").when(courseValidationService).validateCourseName(Mockito.anyString());
         mockMvc.perform(MockMvcRequestBuilders.post("/courses/addCourse")
                         .param("courseName", "course1"))
                 .andExpectAll(
@@ -72,7 +77,9 @@ class CourseControllerTest {
 
     @Test
     void updateCourse() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.patch("/courses/1"))
+        Mockito.doReturn("").when(courseValidationService).validateCourseName(Mockito.anyString());
+        mockMvc.perform(MockMvcRequestBuilders.post("/courses/1")
+                        .param("courseName", "test"))
                 .andExpectAll(
                         MockMvcResultMatchers.status().is3xxRedirection(),
                         MockMvcResultMatchers.redirectedUrl("/courses/1")
@@ -86,6 +93,52 @@ class CourseControllerTest {
                         MockMvcResultMatchers.status().is3xxRedirection(),
                         MockMvcResultMatchers.redirectedUrl("/courses")
                 );
+    }
+
+    @Test
+    void checkCourseExceptionWhenCreateCourse() throws Exception {
+        Mockito.doThrow(CourseException.class).when(courseService).create(new Course("test"));
+        Mockito.doReturn("").when(courseValidationService).validateCourseName(Mockito.anyString());
+        mockMvc.perform((MockMvcRequestBuilders.post("/courses/addCourse"))
+                .param("courseName", "test")
+        ).andExpectAll(
+                MockMvcResultMatchers.status().is2xxSuccessful(),
+                MockMvcResultMatchers.view().name("university/error")
+        );
+    }
+
+    @Test
+    void checkCourseExceptionWhenUpdateCourse() throws Exception {
+        Mockito.doThrow(CourseException.class).when(courseService).update(new Course(1, "test"));
+        Mockito.doReturn("").when(courseValidationService).validateCourseName(Mockito.anyString());
+        mockMvc.perform((MockMvcRequestBuilders.post("/courses/1"))
+                .param("courseName", "test")
+        ).andExpectAll(
+                MockMvcResultMatchers.status().is2xxSuccessful(),
+                MockMvcResultMatchers.view().name("university/error")
+        );
+    }
+
+    @Test
+    void checkCourseExceptionWhenDeleteCourse() throws Exception {
+        Mockito.doThrow(CourseException.class).when(courseService).deleteById(1);
+        mockMvc.perform((MockMvcRequestBuilders.delete("/courses/1"))
+        ).andExpectAll(
+                MockMvcResultMatchers.status().is2xxSuccessful(),
+                MockMvcResultMatchers.view().name("university/error")
+        );
+    }
+
+    @Test
+    void checkNotEmptyCourseNameWhenCreateCourse() throws Exception {
+        Mockito.doReturn("Error message").when(courseValidationService).validateCourseName(Mockito.anyString());
+        mockMvc.perform((MockMvcRequestBuilders.post("/courses/addCourse"))
+                .param("courseName", "")
+        ).andExpectAll(
+                MockMvcResultMatchers.status().is2xxSuccessful(),
+                MockMvcResultMatchers.view().name("university/courses/addCourse"),
+                MockMvcResultMatchers.model().attributeExists("course")
+        );
     }
 
 
