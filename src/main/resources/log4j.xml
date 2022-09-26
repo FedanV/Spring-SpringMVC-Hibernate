@@ -4,7 +4,7 @@
 <log4j:configuration debug="false">
 
     <appender name="task10" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/logs/task10/task10.log"/>
+        <param name="File" value="logs/task10/task10.log"/>
         <param name="Append" value="true"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd'.log'"/>
         <param name="Encoding" value="UTF-8"/>
@@ -14,7 +14,7 @@
     </appender>
 
     <appender name="application" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="/logs/application/application.log"/>
+        <param name="File" value="logs/app/application.log"/>
         <param name="MaxFileSize" value="100MB"/>
         <param name="MaxBackupIndex" value="10"/>
         <param name="Encoding" value="UTF-8"/>

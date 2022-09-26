@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="university/index.html :: headField(title='Students')"></head>
+<body>
+<div class="container text-center">
+
+  <div th:replace="university/index.html :: header"></div>
+  <div th:replace="university/index :: add_button('/students/add')"></div>
+  <div th:replace="university/index :: getAllUserByType('students', ${students})"></div>
+  <h1 th:unless="${students}">No users yet</h1>
+
+</div>
+<div th:replace="university/index :: bootstrap_bundle_min_js"></div>
+</body>
+</html>

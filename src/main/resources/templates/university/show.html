@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="edit_delete_buttons(path, id)" class="row justify-content-md-center">
+    <div class="col-md-auto m-1 g-1">
+        <a class="btn btn-primary" th:href="@{/{path}/{id}/edit(id=${id}, path=${path})}" role="button">Edit</a>
+    </div>
+    <div class="col-md-auto m-1 g-1">
+        <form th:method="DELETE" th:action="@{/{path}/{id}(id=${id}, path=${path})}">
+            <button type="submit" class="btn btn-primary">Delete</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

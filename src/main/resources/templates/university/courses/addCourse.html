@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="university/index :: headField('Add course')"></head>
+<body>
+<div class="container text-center">
+    <div th:replace="university/index :: header"></div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto g-2">
+            <form th:method="POST" th:action="@{/courses/addCourse}" th:object="${course}">
+                <div class="row g-3 m-3 align-items-center">
+                    <div class="col-auto">
+                        <label for="courseName" class="col-form-label">Course name</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="text" class="form-control" id="courseName" th:field="*{courseName}">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:replace="university/index :: bootstrap_bundle_min_js"></div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="university/index :: headField('User')">
+</head>
+<body>
+<div class="container text-center">
+    <div th:replace="university/index :: header"></div>
+    <div th:replace="university/show :: edit_delete_buttons('teachers', ${teacher.getId()})"></div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto g-2">
+            <table class="table table-striped table-bordered">
+                <tbody>
+                <tr>
+                    <th scope="row">Name</th>
+                    <td th:text="${teacher.getName()}">Name</td>
+                </tr>
+                <tr>
+                    <th scope="row">Surname</th>
+                    <td th:text="${teacher.getSurname()}">Surname</td>
+                </tr>
+                <tr>
+                    <th scope="row">Login</th>
+                    <td th:text="${teacher.getLogin()}">Login</td>
+                </tr>
+                <tr>
+                    <th scope="row">Password</th>
+                    <td th:text="${teacher.getPassword()}">Password</td>
+                </tr>
+                <tr>
+                    <th scope="row">Role</th>
+                    <td th:text="${teacher.getRole()}">Role</td>
+                </tr>
+                <tr>
+                    <th scope="row">Type</th>
+                    <td th:text="${teacher.getUserType()}">Type</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div th:replace="university/index :: bootstrap_bundle_min_js"></div>
+</body>
+</html>
