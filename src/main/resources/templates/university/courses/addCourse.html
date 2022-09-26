@@ -13,6 +13,7 @@
                     </div>
                     <div class="col-auto">
                         <input type="text" class="form-control" id="courseName" th:field="*{courseName}">
+                        <div style="color:red" th:if="${#fields.hasErrors('courseName')}" th:errors="*{courseName}"></div>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Add</button>

@@ -84,4 +84,11 @@ public class CourseDaoImpl extends AbstractCrudDao<Course, Integer> implements C
         return jdbcTemplate.query(getCourseById, new BeanPropertyRowMapper<>(Course.class), id)
                 .stream().findFirst();
     }
+
+    @Override
+    public Optional<Course> findByCourseName(String name) {
+        String findByCourseName = "SELECT * FROM course WHERE course_name=?";
+        return jdbcTemplate.query(findByCourseName, new BeanPropertyRowMapper<>(Course.class), name)
+                .stream().findFirst();
+    }
 }

@@ -7,13 +7,14 @@
     <div th:replace="university/index :: header"></div>
     <div class="row justify-content-md-center">
         <div class="col-md-auto g-2">
-            <form th:method="PATCH" th:action="@{/courses/{id}(id=${course.getId()})}" th:object="${course}">
+            <form th:method="POST" th:action="@{/courses/{id}(id=${course.getId()})}" th:object="${course}">
                 <div class="row g-3 m-3 align-items-center">
                     <div class="col-auto">
                         <label for="courseName" class="col-form-label">Course name</label>
                     </div>
                     <div class="col-auto">
                         <input type="text" class="form-control" id="courseName" th:field="*{courseName}">
+                        <div style="color:red" th:if="${#fields.hasErrors('courseName')}" th:errors="*{courseName}"></div>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Update</button>
