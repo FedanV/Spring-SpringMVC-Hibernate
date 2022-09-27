@@ -100,7 +100,7 @@ class LectureControllerTest {
 
     @Test
     void updateLecture() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.patch("/lectures/1")
+        mockMvc.perform(MockMvcRequestBuilders.post("/lectures/1")
                         .param("id", "1")
                         .param("courseId", "2")
                         .param("teacherId", "3")

@@ -1,8 +1,11 @@
 package com.foxminded.vitaliifedan.task10.controllers;
 
+import com.foxminded.vitaliifedan.task10.exceptions.AudienceException;
+import com.foxminded.vitaliifedan.task10.exceptions.CourseException;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
 import com.foxminded.vitaliifedan.task10.services.AudienceService;
+import com.foxminded.vitaliifedan.task10.services.validators.AudienceValidationService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,8 @@ class AudienceControllerTest {
 
     @MockBean
     private AudienceService audienceService;
+    @MockBean
+    private AudienceValidationService audienceValidationService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -49,6 +54,7 @@ class AudienceControllerTest {
 
     @Test
     void saveAudience() throws Exception {
+        Mockito.doReturn("").when(audienceValidationService).validateRoomNumber(Mockito.anyInt());
         mockMvc.perform(MockMvcRequestBuilders.post("/audiences/addAudience")
                         .param("roomNumber", "1"))
                 .andExpectAll(
@@ -70,12 +76,15 @@ class AudienceControllerTest {
                 );
 
     }
+
     @Test
     void updateAudience() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.patch("/audiences/1"))
+        Mockito.doReturn("").when(audienceValidationService).validateRoomNumber(Mockito.anyInt());
+        mockMvc.perform(MockMvcRequestBuilders.post("/audiences/1")
+                        .param("roomNumber", "1"))
                 .andExpectAll(
                         MockMvcResultMatchers.status().is3xxRedirection(),
-                        MockMvcResultMatchers.redirectedUrl("/audience/1")
+                        MockMvcResultMatchers.redirectedUrl("/audiences/1")
                 );
     }
 
@@ -86,6 +95,53 @@ class AudienceControllerTest {
                         MockMvcResultMatchers.status().is3xxRedirection(),
                         MockMvcResultMatchers.redirectedUrl("/audiences")
                 );
+    }
+
+
+    @Test
+    void checkAudienceExceptionWhenCreateAudience() throws Exception {
+        Mockito.doThrow(AudienceException.class).when(audienceService).create(new Audience(null, 1));
+        Mockito.doReturn("").when(audienceValidationService).validateRoomNumber(Mockito.anyInt());
+        mockMvc.perform((MockMvcRequestBuilders.post("/audiences/addAudience"))
+                .param("roomNumber", "1")
+        ).andExpectAll(
+                MockMvcResultMatchers.status().is2xxSuccessful(),
+                MockMvcResultMatchers.view().name("university/error")
+        );
+    }
+
+    @Test
+    void checkAudienceExceptionWhenUpdateAudience() throws Exception {
+        Mockito.doThrow(AudienceException.class).when(audienceService).update(new Audience(1, 1));
+        Mockito.doReturn("").when(audienceValidationService).validateRoomNumber(Mockito.anyInt());
+        mockMvc.perform((MockMvcRequestBuilders.post("/audiences/1"))
+                .param("roomNumber", "1")
+        ).andExpectAll(
+                MockMvcResultMatchers.status().is2xxSuccessful(),
+                MockMvcResultMatchers.view().name("university/error")
+        );
+    }
+
+    @Test
+    void checkAudienceExceptionWhenDeleteAudience() throws Exception {
+        Mockito.doThrow(AudienceException.class).when(audienceService).deletedById(1);
+        mockMvc.perform((MockMvcRequestBuilders.delete("/audiences/1"))
+        ).andExpectAll(
+                MockMvcResultMatchers.status().is2xxSuccessful(),
+                MockMvcResultMatchers.view().name("university/error")
+        );
+    }
+
+    @Test
+    void checkRoomNumberWhenCreateAudience() throws Exception {
+        Mockito.doReturn("Error message").when(audienceValidationService).validateRoomNumber(Mockito.anyInt());
+        mockMvc.perform((MockMvcRequestBuilders.post("/audiences/addAudience"))
+                .param("roomNumber", "1")
+        ).andExpectAll(
+                MockMvcResultMatchers.status().is2xxSuccessful(),
+                MockMvcResultMatchers.view().name("university/audiences/addAudience"),
+                MockMvcResultMatchers.model().attributeExists("audience")
+        );
     }
 
 }

@@ -38,12 +38,12 @@ class UserDaoImplTest extends BaseDaoTest {
 
     @Test
     void should_CreateUser() throws SQLException {
-        Assertions.assertNotNull(userDao.save(new User(null, "login", "pass", Role.ROLE_ADMIN, UserType.USER)));
+        Assertions.assertNotNull(userDao.save(new User(null,"name", "surname", "phone", "login", "pass", Role.ROLE_ADMIN, UserType.USER)));
     }
 
     @Test
     void should_UpdateUser() throws SQLException {
-        Assertions.assertNotNull(userDao.save(new User(1, "new Login", "new Pass", Role.ROLE_STUDENT, UserType.STUDENT)));
+        Assertions.assertNotNull(userDao.save(new User(1, "name", "surname", "phone", "login", "pass", Role.ROLE_ADMIN, UserType.USER)));
     }
 
     @Test

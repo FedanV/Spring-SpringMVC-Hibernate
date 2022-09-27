@@ -1,8 +1,10 @@
 package com.foxminded.vitaliifedan.task10.controllers;
 
+import com.foxminded.vitaliifedan.task10.exceptions.GroupException;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
 import com.foxminded.vitaliifedan.task10.services.GroupService;
+import com.foxminded.vitaliifedan.task10.services.validators.GroupValidationService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import java.util.Optional;
 class GroupControllerTest {
     @MockBean
     private GroupService groupService;
+    @MockBean
+    private GroupValidationService groupValidationService;
     @Autowired
     private MockMvc mockMvc;
 
@@ -48,6 +52,7 @@ class GroupControllerTest {
 
     @Test
     void saveGroup() throws Exception {
+        Mockito.doReturn("").when(groupValidationService).validateGroupName(Mockito.anyString());
         mockMvc.perform(MockMvcRequestBuilders.post("/groups/addGroup")
                         .param("groupName", "group1"))
                 .andExpectAll(
@@ -72,7 +77,9 @@ class GroupControllerTest {
 
     @Test
     void updateGroup() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.patch("/groups/1"))
+        Mockito.doReturn("").when(groupValidationService).validateGroupName("test");
+        mockMvc.perform(MockMvcRequestBuilders.post("/groups/1")
+                        .param("groupName", "test"))
                 .andExpectAll(
                         MockMvcResultMatchers.status().is3xxRedirection(),
                         MockMvcResultMatchers.redirectedUrl("/groups/1")
@@ -88,5 +95,63 @@ class GroupControllerTest {
                 );
     }
 
+    @Test
+    void checkGroupExceptionWhenCreateGroup() throws Exception {
+        Mockito.doThrow(GroupException.class).when(groupService).create(new Group("test"));
+        Mockito.doReturn("").when(groupValidationService).validateGroupName("test");
+        mockMvc.perform(MockMvcRequestBuilders.post("/groups/addGroup")
+                .param("groupName", "test"))
+                .andExpectAll(
+                        MockMvcResultMatchers.status().is2xxSuccessful(),
+                        MockMvcResultMatchers.view().name("university/error")
+                );
+    }
 
+    @Test
+    void checkGroupExceptionWhenUpdateGroup() throws Exception {
+        Mockito.doThrow(GroupException.class).when(groupService).update(new Group(1, "test"));
+        Mockito.doReturn("").when(groupValidationService).validateGroupName("test");
+        mockMvc.perform(MockMvcRequestBuilders.post("/groups/1")
+                        .param("groupName", "test"))
+                .andExpectAll(
+                        MockMvcResultMatchers.status().is2xxSuccessful(),
+                        MockMvcResultMatchers.view().name("university/error")
+                );
+    }
+
+    @Test
+    void checkGroupExceptionWhenDeleteGroup() throws Exception {
+        Mockito.doThrow(GroupException.class).when(groupService).deleteById(1);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/groups/1"))
+                .andExpectAll(
+                        MockMvcResultMatchers.status().is2xxSuccessful(),
+                        MockMvcResultMatchers.view().name("university/error")
+                );
+    }
+
+    @Test
+    void checkGroupNameWhenCreateGroup() throws Exception {
+        Mockito.doReturn("error").when(groupValidationService).validateGroupName("test");
+        mockMvc.perform(MockMvcRequestBuilders.post("/groups/addGroup")
+                        .param("groupName", "test"))
+                .andExpectAll(
+                        MockMvcResultMatchers.status().is2xxSuccessful(),
+                        MockMvcResultMatchers.view().name("university/groups/addGroup"),
+                        MockMvcResultMatchers.model().attributeExists("group")
+                );
+    }
+
+    @Test
+    void checkGroupNameWhenUpdateGroup() throws Exception {
+        Mockito.doReturn("error").when(groupValidationService).validateGroupName("test");
+        Mockito.doReturn(Optional.of(new Group(2))).when(groupService).findGroupByName(Mockito.anyString());
+        Mockito.doReturn(Optional.of(new Group(2))).when(groupService).findGroupByName(Mockito.anyString());
+        mockMvc.perform(MockMvcRequestBuilders.post("/groups/1")
+                        .param("groupName", "test"))
+                .andExpectAll(
+                        MockMvcResultMatchers.status().is2xxSuccessful(),
+                        MockMvcResultMatchers.view().name("university/groups/editGroup"),
+                        MockMvcResultMatchers.model().attributeExists("group")
+                );
+    }
 }
