@@ -12,8 +12,8 @@
                         <label for="groupName" class="col-form-label">Group name</label>
                     </div>
                     <div class="col-auto">
-                        <input type="text" class="form-control" id="groupName" aria-describedby="audienceName"
-                               th:field="*{groupName}">
+                        <input type="text" class="form-control" id="groupName" aria-describedby="audienceName" th:field="*{groupName}">
+                        <div style="color: red" th:if="${#fields.hasErrors('groupName')}" th:errors="*{groupName}"></div>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Add</button>

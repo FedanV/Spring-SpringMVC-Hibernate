@@ -15,5 +15,41 @@
         </form>
     </div>
 </div>
+<div th:fragment="showUser(user)" class="row justify-content-md-center">
+    <div class="col-md-auto g-2">
+        <table class="table table-striped table-bordered">
+            <tbody>
+            <tr>
+                <th scope="row">Name</th>
+                <td th:text="${user.getName()}">Name</td>
+            </tr>
+            <tr>
+                <th scope="row">Surname</th>
+                <td th:text="${user.getSurname()}">Surname</td>
+            </tr>
+            <tr>
+                <th scope="row">Phone</th>
+                <td th:text="${user.getPhone()}">Phone</td>
+            </tr>
+            <tr>
+                <th scope="row">Login</th>
+                <td th:text="${user.getLogin()}">Login</td>
+            </tr>
+            <tr>
+                <th scope="row">Password</th>
+                <td th:text="${user.getPassword()}">Password</td>
+            </tr>
+            <tr>
+                <th scope="row">Role</th>
+                <td th:text="${user.getRole()}">Role</td>
+            </tr>
+            <tr>
+                <th scope="row">Type</th>
+                <td th:text="${user.getUserType()}">Type</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>

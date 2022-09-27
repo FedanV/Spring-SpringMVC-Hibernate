@@ -44,6 +44,7 @@
             <th scope="col">№</th>
             <th scope="col">Name</th>
             <th scope="col">Surname</th>
+            <th scope="col">Phone</th>
             <th scope="col">Login</th>
             <th scope="col">Password</th>
             <th scope="col">Role</th>
@@ -54,6 +55,7 @@
             <th scope="row" th:text="${state.index} + 1">index</th>
             <td th:text="${user.getName()}">User name</td>
             <td th:text="${user.getSurname()}">User surname</td>
+            <td th:text="${user.getPhone()}">User phone</td>
             <td th:text="${user.getLogin()}">User login</td>
             <td th:text="${user.getPassword}">User password</td>
             <td th:text="${user.getRole()}">User role</td>

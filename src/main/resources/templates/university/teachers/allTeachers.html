@@ -3,12 +3,10 @@
 <head th:replace="university/index.html :: headField(title='Users')"></head>
 <body>
 <div class="container text-center">
-
     <div th:replace="university/index.html :: header"></div>
     <div th:replace="university/index :: add_button('/teachers/add')"></div>
     <div th:replace="university/index :: getAllUserByType('teachers', ${teachers})"></div>
     <h1 th:unless="${teachers}">No users yet</h1>
-
 </div>
 <div th:replace="university/index :: bootstrap_bundle_min_js"></div>
 </body>

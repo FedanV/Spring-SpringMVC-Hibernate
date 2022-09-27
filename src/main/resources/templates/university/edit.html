@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="university/index :: headField('Add user')"></head>
+<body>
+<div class="container text-center">
+    <div th:fragment="editUser(path, user, roles, buttonName)" class="row justify-content-md-center">
+        <div class="col-md-auto g-2">
+            <form th:method="POST" th:action="@{{path}/{id}(path=${path}, id=${user.getId()})}" th:object="${user}">
+
+                <div class="row g-2 m-3 align-items-center">
+                    <div class="col-3">
+                        <label for="name" class="col-form-label">Name</label>
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="name" th:field="*{name}">
+                        <div style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                    </div>
+                </div>
+
+                <div class="row g-2 m-3 align-items-center">
+                    <div class="col-3">
+                        <label for="surname" class="col-form-label">Surname</label>
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="surname" th:field="*{surname}">
+                        <div style="color: red" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
+                    </div>
+                </div>
+
+                <div class="row g-2 m-3 align-items-center">
+                    <div class="col-3">
+                        <label for="phone" class="col-form-label">Phone</label>
+                    </div>
+                    <div class="col-9">
+                        <input type="number" class="form-control" id="phone" th:field="*{phone}">
+                        <div style="color: red" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                    </div>
+                </div>
+                <div class="row g-2 m-3 align-items-center">
+                    <div class="col-3">
+                        <label for="login" class="col-form-label">Login</label>
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="login" th:field="*{login}">
+                        <div style="color: red" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></div>
+                    </div>
+                </div>
+                <div class="row g-2 m-3 align-items-center">
+                    <div class="col-3">
+                        <label for="password" class="col-form-label">Password</label>
+                    </div>
+                    <div class="col-9">
+                        <input type="text" class="form-control" id="password" th:field="*{password}">
+                        <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    </div>
+                </div>
+                <div class="row g-2 m-3 align-items-center">
+                    <div class="col-3">
+                        <label for="role" class="col-form-label">Role</label>
+                    </div>
+                    <div class="col-9">
+                        <select th:object="${user}" th:field="*{role}" class="form-select" id="role">
+                            <option th:each="role : ${roles}" th:value="${role}" th:text="${role}" selected>
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row g-2 m-3 align-items-center">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary" th:text="${buttonName}"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:replace="university/index :: bootstrap_bundle_min_js"></div>
+</body>
+</html>
