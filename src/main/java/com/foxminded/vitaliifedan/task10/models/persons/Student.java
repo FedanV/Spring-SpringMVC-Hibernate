@@ -11,12 +11,12 @@ public class Student extends User {
 
     private Group group;
 
-    public Student(Integer id, String login, String password, Role role, UserType userType) {
-        super(id, login, password, role, userType);
+    public Student(Integer id, String name, String surname, String phone, String login, String password, Role role, UserType userType) {
+        super(id, name, surname, phone, login, password, role, userType);
     }
 
-    public Student(String login, String password, Role role, UserType userType) {
-        super(login, password, role, userType);
+    public Student(String name, String surname, String phone, String login, String password, Role role, UserType userType) {
+        super(name, surname, phone, login, password, role, userType);
     }
 
     public Student(Integer id, Group group) {

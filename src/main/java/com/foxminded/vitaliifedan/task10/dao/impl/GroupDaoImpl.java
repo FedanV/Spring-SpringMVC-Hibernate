@@ -83,4 +83,11 @@ public class GroupDaoImpl extends AbstractCrudDao<Group, Integer> implements Gro
         return jdbcTemplate.query(getGroupById, new BeanPropertyRowMapper<>(Group.class), id)
                 .stream().findFirst();
     }
+
+    @Override
+    public Optional<Group> findGroupByGroupName(String name) {
+        String findGroupByGroupName = "SELECT * FROM groups WHERE group_name=?";
+        return jdbcTemplate.query(findGroupByGroupName, new BeanPropertyRowMapper<>(Group.class), name)
+                .stream().findFirst();
+    }
 }

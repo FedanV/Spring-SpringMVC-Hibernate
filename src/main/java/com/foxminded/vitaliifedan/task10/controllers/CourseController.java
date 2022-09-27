@@ -69,9 +69,9 @@ public class CourseController {
 
     @PostMapping("/{id}")
     public String updateCourse(@PathVariable("id") Integer id, @ModelAttribute("course") @Valid Course course, BindingResult result) {
-        String err = courseValidationService.validateCourseName(course.getCourseName());
-        if (!err.isEmpty()) {
-            result.rejectValue("courseName", "", err);
+        if (courseService.findCourseByName(course.getCourseName()).isPresent() &&
+                !courseService.findCourseByName(course.getCourseName()).get().getId().equals(id)) {
+            result.rejectValue("courseName", "", courseValidationService.validateCourseName(course.getCourseName()));
         }
         if (result.hasErrors()) {
             return "university/courses/editCourse";

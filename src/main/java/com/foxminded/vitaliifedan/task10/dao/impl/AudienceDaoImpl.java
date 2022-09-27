@@ -83,4 +83,11 @@ public class AudienceDaoImpl extends AbstractCrudDao<Audience, Integer> implemen
         return jdbcTemplate.query(getAudienceById, new BeanPropertyRowMapper<>(Audience.class), id)
                 .stream().findFirst();
     }
+
+    @Override
+    public Optional<Audience> findAudienceByRoomNumber(Integer roomNumber) {
+        String findAudienceByRoomNumber = "SELECT * FROM audience WHERE room_number=?";
+        return jdbcTemplate.query(findAudienceByRoomNumber, new BeanPropertyRowMapper<>(Audience.class), roomNumber)
+                .stream().findFirst();
+    }
 }

@@ -16,12 +16,12 @@ public class Teacher extends User {
         super(id);
     }
 
-    public Teacher(Integer id, String login, String password, Role role, UserType userType) {
-        super(id, login, password, role, userType);
+    public Teacher(Integer id, String name, String surname, String phone, String login, String password, Role role, UserType userType) {
+        super(id, name, surname, phone, login, password, role, userType);
     }
 
-    public Teacher(String login, String password, Role role, UserType userType) {
-        super(login, password, role, userType);
+    public Teacher(String name, String surname, String phone, String login, String password, Role role, UserType userType) {
+        super(name, surname, phone, login, password, role, userType);
     }
 
     public Teacher(Integer id, List<Course> courses) {

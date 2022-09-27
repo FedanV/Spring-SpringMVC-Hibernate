@@ -106,7 +106,7 @@ public class LectureController {
         return "university/lectures/editLecture";
     }
 
-    @PatchMapping("/{id}")
+    @PostMapping ("/{id}")
     public String updateLecture(@PathVariable("id") Integer id, @ModelAttribute LectureDTO lectureDTO) {
         Lecture lecture = new Lecture(
                 id,

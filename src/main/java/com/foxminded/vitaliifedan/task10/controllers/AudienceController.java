@@ -1,12 +1,16 @@
 package com.foxminded.vitaliifedan.task10.controllers;
 
+import com.foxminded.vitaliifedan.task10.exceptions.AudienceException;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
 import com.foxminded.vitaliifedan.task10.services.AudienceService;
+import com.foxminded.vitaliifedan.task10.services.validators.AudienceValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -14,10 +18,12 @@ import java.util.List;
 public class AudienceController {
 
     private final AudienceService audienceService;
+    private final AudienceValidationService audienceValidationService;
 
     @Autowired
-    public AudienceController(AudienceService audienceService) {
+    public AudienceController(AudienceService audienceService, AudienceValidationService audienceValidationService) {
         this.audienceService = audienceService;
+        this.audienceValidationService = audienceValidationService;
     }
 
     @GetMapping()
@@ -33,8 +39,19 @@ public class AudienceController {
     }
 
     @PostMapping("/addAudience")
-    public String saveAudience(@ModelAttribute Audience audience) {
-        audienceService.create(audience);
+    public String saveAudience(@ModelAttribute @Valid Audience audience, BindingResult result) {
+        String err = audienceValidationService.validateRoomNumber(audience.getRoomNumber());
+        if(!err.isEmpty()) {
+            result.rejectValue("roomNumber", "", err);
+        }
+        if(result.hasErrors()) {
+            return "university/audiences/addAudience";
+        }
+        try {
+            audienceService.create(audience);
+        } catch (AudienceException e) {
+            return "university/error";
+        }
         return "redirect:/audiences";
     }
 
@@ -50,15 +67,30 @@ public class AudienceController {
         return "university/audiences/editAudience";
     }
 
-    @PatchMapping("/{id}")
-    public String updateAudience(@PathVariable("id") Integer id, @ModelAttribute("audience") Audience audience) {
-        audienceService.update(audience);
-        return "redirect:/audience/" + id;
+    @PostMapping ("/{id}")
+    public String updateAudience(@PathVariable("id") Integer id, @ModelAttribute("audience") Audience audience, BindingResult result) {
+        if (audienceService.findAudienceByNumber(audience.getRoomNumber()).isPresent() &&
+                !audienceService.findAudienceByNumber(audience.getRoomNumber()).get().getId().equals(id)) {
+            result.rejectValue("roomNumber", "", audienceValidationService.validateRoomNumber(audience.getRoomNumber()));
+        }
+        if(result.hasErrors()) {
+            return "university/audiences/editAudience";
+        }
+        try {
+            audienceService.update(audience);
+        } catch (AudienceException e) {
+            return "university/error";
+        }
+        return "redirect:/audiences/" + id;
     }
 
     @DeleteMapping("/{id}")
     public String deleteAudience(@PathVariable("id") Integer id) {
-        audienceService.deletedById(id);
+        try {
+            audienceService.deletedById(id);
+        } catch (AudienceException e) {
+            return "university/error";
+        }
         return "redirect:/audiences";
     }
 }

@@ -1,12 +1,16 @@
 package com.foxminded.vitaliifedan.task10.controllers;
 
+import com.foxminded.vitaliifedan.task10.exceptions.GroupException;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
 import com.foxminded.vitaliifedan.task10.services.GroupService;
+import com.foxminded.vitaliifedan.task10.services.validators.GroupValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -14,10 +18,12 @@ import java.util.List;
 public class GroupController {
 
     private final GroupService groupService;
+    private final GroupValidationService groupValidationService;
 
     @Autowired
-    public GroupController(GroupService groupService) {
+    public GroupController(GroupService groupService, GroupValidationService groupValidationService) {
         this.groupService = groupService;
+        this.groupValidationService = groupValidationService;
     }
 
     @GetMapping()
@@ -33,8 +39,19 @@ public class GroupController {
     }
 
     @PostMapping("/addGroup")
-    public String saveGroup(@ModelAttribute Group group) {
-        groupService.create(group);
+    public String saveGroup(@ModelAttribute @Valid Group group, BindingResult result) {
+        String err = groupValidationService.validateGroupName(group.getGroupName());
+        if (!err.isEmpty()) {
+            result.rejectValue("groupName", "", err);
+        }
+        if (result.hasErrors()) {
+            return "university/groups/addGroup";
+        }
+        try {
+            groupService.create(group);
+        } catch (GroupException e) {
+            return "university/error";
+        }
         return "redirect:/groups";
     }
 
@@ -50,15 +67,30 @@ public class GroupController {
         return "university/groups/editGroup";
     }
 
-    @PatchMapping("/{id}")
-    public String updateGroup(@PathVariable("id") Integer id, @ModelAttribute("group") Group group) {
-        groupService.update(group);
+    @PostMapping("/{id}")
+    public String updateGroup(@PathVariable("id") Integer id, @ModelAttribute("group") @Valid Group group, BindingResult result) {
+        if (groupService.findGroupByName(group.getGroupName()).isPresent() &&
+                !groupService.findGroupByName(group.getGroupName()).get().getId().equals(id)) {
+            result.rejectValue("groupName", "", groupValidationService.validateGroupName(group.getGroupName()));
+        }
+        if (result.hasErrors()) {
+            return "university/groups/editGroup";
+        }
+        try {
+            groupService.update(group);
+        } catch (GroupException e) {
+            return "university/error";
+        }
         return "redirect:/groups/" + id;
     }
 
     @DeleteMapping("/{id}")
     public String deleteGroup(@PathVariable("id") Integer id) {
-        groupService.deleteById(id);
+        try {
+            groupService.deleteById(id);
+        } catch (GroupException e) {
+            return "university/error";
+        }
         return "redirect:/groups";
     }
 }
