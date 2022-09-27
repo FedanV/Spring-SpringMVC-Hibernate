@@ -16,4 +16,5 @@ public interface AudienceService {
     Audience update(Audience audience);
 
     Boolean deletedById(Integer id);
+    Optional<Audience> findAudienceByNumber(Integer number);
 }

@@ -64,4 +64,9 @@ public class AudienceServiceImpl implements AudienceService {
             throw e;
         }
     }
+
+    @Override
+    public Optional<Audience> findAudienceByNumber(Integer number) {
+        return audienceDao.findAudienceByRoomNumber(number);
+    }
 }

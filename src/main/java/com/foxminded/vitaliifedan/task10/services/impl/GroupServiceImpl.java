@@ -63,4 +63,9 @@ public class GroupServiceImpl implements GroupService {
             throw e;
         }
     }
+
+    @Override
+    public Optional<Group> findGroupByName(String name) {
+        return groupDao.findGroupByGroupName(name);
+    }
 }

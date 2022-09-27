@@ -64,4 +64,9 @@ public class CourseServiceImpl implements CourseService {
             throw e;
         }
     }
+
+    @Override
+    public Optional<Course> findCourseByName(String name) {
+        return courseDao.findByCourseName(name);
+    }
 }

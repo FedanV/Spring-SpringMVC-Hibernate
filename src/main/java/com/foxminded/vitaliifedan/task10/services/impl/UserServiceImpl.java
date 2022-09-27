@@ -138,4 +138,9 @@ public class UserServiceImpl implements UserService {
             throw e;
         }
     }
+
+    @Override
+    public Optional<User> findUserByPhone(String phone) {
+        return userDao.findUserByPhone(phone);
+    }
 }

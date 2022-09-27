@@ -32,4 +32,6 @@ public interface UserService {
     Boolean removeCourseFromTeacher(Integer teacherId, Integer courseId);
 
     Teacher updateCourseForTeacher(Integer teacherId, Integer newCourseId, Integer oldCourseId);
+
+    Optional<User> findUserByPhone(String phone);
 }
