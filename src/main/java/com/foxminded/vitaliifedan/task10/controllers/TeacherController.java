@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/teachers")
@@ -84,12 +85,25 @@ public class TeacherController {
             model.addAttribute("roles", Role.values());
             return "university/teachers/editTeacher";
         }
-        teacher.setUserType(UserType.TEACHER);
-        teacher.setId(id);
-        try {
-            userService.update(teacher);
-        } catch (UserException e) {
-            return "university/error";
+        Optional<User> updateUser = userService.findById(id);
+        if (updateUser.isPresent()) {
+            updateUser.get().setName(teacher.getName());
+            updateUser.get().setSurname(teacher.getSurname());
+            updateUser.get().setPhone(teacher.getPhone());
+            if (teacher.getPassword() != null) {
+                updateUser.get().setPassword(teacher.getPassword());
+            }
+            if (teacher.getLogin() != null) {
+                updateUser.get().setLogin(teacher.getLogin());
+            }
+            if (teacher.getRole() != null) {
+                updateUser.get().setRole(teacher.getRole());
+            }
+            try {
+                userService.update(updateUser.get());
+            } catch (UserException e) {
+                return "university/error";
+            }
         }
         return "redirect:/teachers/" + id;
     }

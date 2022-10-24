@@ -7,6 +7,7 @@ import com.foxminded.vitaliifedan.task10.services.AudienceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,7 @@ public class AudienceServiceImpl implements AudienceService {
     public Optional<Audience> findById(Integer id) {
         return audienceDao.getById(id);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Audience create(Audience audience) {
         try {
@@ -54,7 +55,7 @@ public class AudienceServiceImpl implements AudienceService {
             throw e;
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Boolean deletedById(Integer id) {
         try {

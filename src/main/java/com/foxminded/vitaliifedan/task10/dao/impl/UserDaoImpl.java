@@ -105,5 +105,13 @@ public class UserDaoImpl extends AbstractCrudDao<User, Integer> implements UserD
                 .stream().findFirst();
     }
 
+    @Override
+    public Optional<User> findUserByLogin(String login) {
+        String findUserByLogin = "SELECT * FROM users WHERE login=?";
+        return jdbcTemplate.query(findUserByLogin, new BeanPropertyRowMapper<>(User.class), login)
+                .stream().findFirst();
+    }
+
+
 
 }

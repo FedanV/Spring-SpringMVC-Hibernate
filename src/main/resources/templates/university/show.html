@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <div th:fragment="edit_delete_buttons(path, id)" class="row justify-content-md-center">
-    <div class="col-md-auto m-1 g-1">
+    <div th:if="${owner == true or #authorization.expression('hasRole(''ROLE_ADMIN'')')}" class="col-md-auto m-1 g-1">
         <a class="btn btn-primary" th:href="@{/{path}/{id}/edit(id=${id}, path=${path})}" role="button">Edit</a>
     </div>
-    <div class="col-md-auto m-1 g-1">
+    <div sec:authorize="hasRole('ROLE_ADMIN')" class="col-md-auto m-1 g-1">
         <form th:method="DELETE" th:action="@{/{path}/{id}(id=${id}, path=${path})}">
             <button type="submit" class="btn btn-primary">Delete</button>
         </form>
@@ -31,11 +31,11 @@
                 <th scope="row">Phone</th>
                 <td th:text="${user.getPhone()}">Phone</td>
             </tr>
-            <tr>
+            <tr sec:authorize="hasRole('ROLE_ADMIN')">
                 <th scope="row">Login</th>
                 <td th:text="${user.getLogin()}">Login</td>
             </tr>
-            <tr>
+            <tr sec:authorize="hasRole('ROLE_ADMIN')">
                 <th scope="row">Password</th>
                 <td th:text="${user.getPassword()}">Password</td>
             </tr>

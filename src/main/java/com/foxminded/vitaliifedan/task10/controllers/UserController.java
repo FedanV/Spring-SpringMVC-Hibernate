@@ -1,5 +1,6 @@
 package com.foxminded.vitaliifedan.task10.controllers;
 
+import com.foxminded.vitaliifedan.task10.dto.UserRegistrationDTO;
 import com.foxminded.vitaliifedan.task10.exceptions.UserException;
 import com.foxminded.vitaliifedan.task10.models.persons.Role;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
@@ -7,7 +8,10 @@ import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.services.UserService;
 import com.foxminded.vitaliifedan.task10.services.validators.UserValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
@@ -22,11 +27,13 @@ public class UserController {
 
     private final UserService userService;
     private final UserValidationService userValidationService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserService userService, UserValidationService userValidationService) {
+    public UserController(UserService userService, UserValidationService userValidationService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.userValidationService = userValidationService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping()
@@ -63,7 +70,13 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String showUser(@PathVariable("id") Integer id, Model model) {
-        userService.findById(id).ifPresent(entity -> model.addAttribute("user", entity));
+        String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        userService.findById(id).ifPresent(user -> {
+            model.addAttribute("user", user);
+            if (user.getLogin().equals(username)) {
+                model.addAttribute("owner", true);
+            }
+        });
         return "university/users/showUser";
     }
 
@@ -84,12 +97,25 @@ public class UserController {
             model.addAttribute("roles", Role.values());
             return "university/users/editUser";
         }
-        user.setUserType(UserType.USER);
-        user.setId(id);
-        try {
-            userService.update(user);
-        } catch (UserException e) {
-            return "university/error";
+        Optional<User> updateUser = userService.findById(id);
+        if (updateUser.isPresent()) {
+            updateUser.get().setName(user.getName());
+            updateUser.get().setSurname(user.getSurname());
+            updateUser.get().setPhone(user.getPhone());
+            if (user.getPassword() != null) {
+                updateUser.get().setPassword(user.getPassword());
+            }
+            if (user.getLogin() != null) {
+                updateUser.get().setLogin(user.getLogin());
+            }
+            if (user.getRole() != null) {
+                updateUser.get().setRole(user.getRole());
+            }
+            try {
+                userService.update(updateUser.get());
+            } catch (UserException e) {
+                return "university/error";
+            }
         }
         return "redirect:/users/" + id;
     }
@@ -102,6 +128,29 @@ public class UserController {
             return "university/error";
         }
         return "redirect:/users";
+    }
+
+    @GetMapping("/registration")
+    public String registrationPage(@ModelAttribute("user") UserRegistrationDTO user) {
+        return "university/registration";
+    }
+
+    @PostMapping("/registration")
+    public String userRegistration(@ModelAttribute("user") @Valid UserRegistrationDTO user, BindingResult result) {
+        String loginError = userValidationService.validateLogin(user.getLogin());
+        if (!loginError.isEmpty()) {
+            result.rejectValue("login", "", loginError);
+        }
+        if (result.hasErrors()) {
+            return "university/registration";
+        }
+        User registeredUser = new User(user.getLogin(), passwordEncoder.encode(user.getPassword()), Role.NONE, UserType.USER);
+        try {
+            userService.create(registeredUser);
+        } catch (UserException e) {
+            return "university/error";
+        }
+        return "redirect:/login";
     }
 
 }

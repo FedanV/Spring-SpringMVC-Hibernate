@@ -1,5 +1,5 @@
 <!DOCTYPE html >
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:fragment="headField (title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,10 +30,14 @@
     <li class="nav-item">
         <a class="nav-link" th:href="@{/courses}">Courses</a>
     </li>
+
+    <form th:method="POST" th:action="@{/logout}">
+        <button type="submit" class="btn btn-primary">Logout</button>
+    </form>
 </ul>
 
 <div th:fragment="add_button (path)" class="row justify-content-md-center">
-    <div class="col-md-auto g-2 m-2">
+    <div sec:authorize="hasRole('ROLE_ADMIN')" class="col-md-auto g-2 m-2">
         <a class="btn btn-primary" th:href="@{{path}(path=${path})}" role="button">Add</a>
     </div>
 </div>
@@ -46,7 +50,7 @@
             <th scope="col">Surname</th>
             <th scope="col">Phone</th>
             <th scope="col">Login</th>
-            <th scope="col">Password</th>
+            <th sec:authorize="hasRole('ROLE_ADMIN')" scope="col">Password</th>
             <th scope="col">Role</th>
         </tr>
         </thead>
@@ -57,7 +61,7 @@
             <td th:text="${user.getSurname()}">User surname</td>
             <td th:text="${user.getPhone()}">User phone</td>
             <td th:text="${user.getLogin()}">User login</td>
-            <td th:text="${user.getPassword}">User password</td>
+            <td sec:authorize="hasRole('ROLE_ADMIN')" th:text="${user.getPassword}">User password</td>
             <td th:text="${user.getRole()}">User role</td>
             <td><a class="btn btn-primary" th:href="@{/{path}/{id}(id=${user.getId()}, path=${path})}"
                    role="button">Show</a></td>

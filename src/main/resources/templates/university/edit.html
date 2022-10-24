@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:insert="university/index :: headField('Add user')"></head>
 <body>
 <div class="container text-center">
@@ -45,7 +45,7 @@
                         <div style="color: red" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></div>
                     </div>
                 </div>
-                <div class="row g-2 m-3 align-items-center">
+                <div sec:authorize="hasRole('ROLE_ADMIN')" class="row g-2 m-3 align-items-center">
                     <div class="col-3">
                         <label for="password" class="col-form-label">Password</label>
                     </div>
@@ -54,11 +54,11 @@
                         <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                     </div>
                 </div>
-                <div class="row g-2 m-3 align-items-center">
+                <div sec:authorize="hasRole('ROLE_ADMIN')" class="row g-2 m-3 align-items-center">
                     <div class="col-3">
                         <label for="role" class="col-form-label">Role</label>
                     </div>
-                    <div class="col-9">
+                    <div sec:authority="hasRole('ROLE_ADMIN')" class="col-9">
                         <select th:object="${user}" th:field="*{role}" class="form-select" id="role">
                             <option th:each="role : ${roles}" th:value="${role}" th:text="${role}" selected>
                             </option>

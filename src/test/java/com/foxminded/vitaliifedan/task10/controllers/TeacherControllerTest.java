@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -22,6 +23,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.doReturn;
 
 @WebMvcTest(TeacherController.class)
+@WithMockUser(username = "test", password = "test", authorities = {"ADMIN"})
 class TeacherControllerTest {
 
     @MockBean
@@ -131,6 +133,7 @@ class TeacherControllerTest {
     void checkUserExceptionWhenUpdateTeacher() throws Exception {
         Mockito.doThrow(UserException.class).when(userService).update(new User(1, "name", "surname", "phone1", "login", "password", Role.NONE, UserType.TEACHER));
         Mockito.doReturn("").when(userValidationService).validatePhoneNumber(Mockito.anyString());
+        Mockito.doReturn(Optional.of(new User(1, "name", "surname", "phone1", "login", "password", Role.NONE, UserType.USER))).when(userService).findById(Mockito.anyInt());
         mockMvc.perform(MockMvcRequestBuilders.post("/teachers/1")
                         .param("id", "1")
                         .param("name", "name")

@@ -11,4 +11,6 @@ public interface UserDao extends CrudDao<User, Integer> {
     List<User> getUsersByUserType(UserType userType);
 
     Optional<User> findUserByPhone(String phone);
+
+    Optional<User> findUserByLogin(String login);
 }

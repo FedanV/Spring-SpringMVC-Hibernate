@@ -7,6 +7,7 @@ import com.foxminded.vitaliifedan.task10.services.GroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,7 @@ public class GroupServiceImpl implements GroupService {
     public Optional<Group> findById(Integer id) {
         return groupDao.getById(id);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Group create(Group group) {
         try {
@@ -53,7 +54,7 @@ public class GroupServiceImpl implements GroupService {
             throw e;
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Boolean deleteById(Integer id) {
         try {

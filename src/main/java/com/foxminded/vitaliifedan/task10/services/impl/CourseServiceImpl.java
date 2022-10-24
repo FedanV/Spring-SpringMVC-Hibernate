@@ -7,6 +7,7 @@ import com.foxminded.vitaliifedan.task10.services.CourseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,7 @@ public class CourseServiceImpl implements CourseService {
     public Optional<Course> findById(Integer id) {
         return courseDao.getById(id);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Course create(Course course) {
         try {
@@ -54,7 +55,7 @@ public class CourseServiceImpl implements CourseService {
             throw e;
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Boolean deleteById(Integer id) {
         try {

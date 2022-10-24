@@ -16,8 +16,16 @@ public class UserValidationService {
 
     public String validatePhoneNumber(String number) {
         String message = "";
-        if(userDao.findUserByPhone(number).isPresent()) {
+        if (userDao.findUserByPhone(number).isPresent()) {
             message = "This phone number exists";
+        }
+        return message;
+    }
+
+    public String validateLogin(String login) {
+        String message = "";
+        if (userDao.findUserByLogin(login).isPresent()) {
+            message = String.format("User with login: %s exist", login);
         }
         return message;
     }

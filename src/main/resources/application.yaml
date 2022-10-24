@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/university
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+logging:
+  file:
+    name: task10.log
+    path: /
+  level:
+    root: INFO

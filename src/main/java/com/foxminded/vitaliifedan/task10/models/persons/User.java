@@ -4,7 +4,6 @@ import com.foxminded.vitaliifedan.task10.models.IntegerId;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -22,7 +21,6 @@ public class User extends IntegerId {
     private String phone;
     @NotEmpty(message = "Login should not be empty!")
     private String login;
-    @NotEmpty(message = "Password should not be empty!")
     private String password;
     private Role role;
     private UserType userType;
@@ -54,5 +52,11 @@ public class User extends IntegerId {
         this.phone = phone;
         this.name = name;
         this.surname = surname;
+    }
+    public User(String login, String password, Role role, UserType userType) {
+        this.login = login;
+        this.password = password;
+        this.role = role;
+        this.userType = userType;
     }
 }

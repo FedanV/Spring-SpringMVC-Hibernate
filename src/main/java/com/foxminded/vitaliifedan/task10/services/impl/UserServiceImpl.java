@@ -12,14 +12,19 @@ import com.foxminded.vitaliifedan.task10.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -68,7 +73,7 @@ public class UserServiceImpl implements UserService {
             throw e;
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Boolean deletedById(Integer id) {
         try {
@@ -88,7 +93,7 @@ public class UserServiceImpl implements UserService {
             throw e;
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Boolean removeStudentFromGroup(Integer userId) {
         try {
@@ -143,4 +148,17 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findUserByPhone(String phone) {
         return userDao.findUserByPhone(phone);
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        return userDao.findUserByLogin(login)
+                .map(user -> new org.springframework.security.core.userdetails.User(
+                        user.getLogin(),
+                        user.getPassword(),
+                        Collections.singleton(user.getRole())
+                ))
+                .orElseThrow(() -> new UsernameNotFoundException("Failed to retrieve user: " + login));
+    }
+
+
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/students")
@@ -83,12 +84,25 @@ public class StudentController {
         if (result.hasErrors()) {
             return "university/students/editStudent";
         }
-        student.setUserType(UserType.STUDENT);
-        student.setId(id);
-        try {
-            userService.update(student);
-        } catch (UserException e) {
-            return "university/error";
+        Optional<User> updateUser = userService.findById(id);
+        if (updateUser.isPresent()) {
+            updateUser.get().setName(student.getName());
+            updateUser.get().setSurname(student.getSurname());
+            updateUser.get().setPhone(student.getPhone());
+            if (student.getPassword() != null) {
+                updateUser.get().setPassword(student.getPassword());
+            }
+            if (student.getLogin() != null) {
+                updateUser.get().setLogin(student.getLogin());
+            }
+            if (student.getRole() != null) {
+                updateUser.get().setRole(student.getRole());
+            }
+            try {
+                userService.update(updateUser.get());
+            } catch (UserException e) {
+                return "university/error";
+            }
         }
         return "redirect:/students/" + id;
     }
