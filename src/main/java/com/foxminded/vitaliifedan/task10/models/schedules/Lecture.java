@@ -1,43 +1,87 @@
 package com.foxminded.vitaliifedan.task10.models.schedules;
 
-import com.foxminded.vitaliifedan.task10.models.IntegerId;
+import com.foxminded.vitaliifedan.task10.models.BaseEntity;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
-import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
-import lombok.Getter;
-import lombok.Setter;
+import com.foxminded.vitaliifedan.task10.models.persons.User;
+import lombok.*;
+import org.hibernate.Hibernate;
 
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
-public class Lecture extends IntegerId {
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Entity
+@Table(name = "lecture")
+public class Lecture implements BaseEntity<Integer> {
 
-    private Course course;
-    private Teacher teacher;
-    private LocalDate lectureDate;
-    private Group group;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
+    @Column(name = "pair_number")
     private Integer pairNumber;
+
+    @Column(name = "lecture_date")
+    private LocalDate lectureDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private Course course;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private User teacher;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private Group group;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "audience_id", referencedColumnName = "id")
+    @ToString.Exclude
     private Audience audience;
 
-    public Lecture() {
+    public void setAudience(Audience audience) {
+        this.audience = audience;
+        this.audience.getLectures().add(this);
     }
 
-    public Lecture(Course course, Teacher teacher, LocalDate lectureDate, Group group, Integer pairNumber, Audience audience) {
-        this.course = course;
-        this.audience = audience;
-        this.teacher = teacher;
-        this.lectureDate = lectureDate;
+    public void setGroup(Group group) {
         this.group = group;
-        this.pairNumber = pairNumber;
+        this.group.getLectures().add(this);
     }
 
-    public Lecture(int id, Course course, Teacher teacher, LocalDate lectureDate, Group group, Integer pairNumber, Audience audience) {
-        this.id = id;
-        this.course = course;
-        this.audience = audience;
+    public void setTeacher(User teacher) {
         this.teacher = teacher;
-        this.lectureDate = lectureDate;
-        this.group = group;
-        this.pairNumber = pairNumber;
+        this.teacher.getLectures().add(this);
     }
+
+    public void setCourse(Course course) {
+        this.course = course;
+        this.course.getLectures().add(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Lecture lecture = (Lecture) o;
+        return id != null && Objects.equals(id, lecture.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
 }
