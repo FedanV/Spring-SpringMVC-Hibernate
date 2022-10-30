@@ -1,21 +1,21 @@
 package com.foxminded.vitaliifedan.task10.dao;
 
 import com.foxminded.vitaliifedan.task10.containers.BaseDaoTest;
-import com.foxminded.vitaliifedan.task10.dao.impl.StudentDaoImpl;
+import com.foxminded.vitaliifedan.task10.dao.impl.StudentGroupDaoImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import javax.persistence.EntityManager;
 import java.sql.SQLException;
 
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
-@JdbcTest
+@DataJpaTest
 @AutoConfigureTestDatabase(
         replace = AutoConfigureTestDatabase.Replace.NONE
 )
@@ -25,27 +25,27 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 class StudentDaoImplTest extends BaseDaoTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private EntityManager entityManager;
 
-    private StudentDao studentDao;
+    private StudentGroupDao studentGroupDao;
 
     @BeforeEach
     void init() {
-        studentDao = new StudentDaoImpl(jdbcTemplate);
+        studentGroupDao = new StudentGroupDaoImpl(entityManager);
     }
 
     @Test
-    void should_AddGroupToStudent() throws SQLException {
-        Assertions.assertNotNull(studentDao.addGroupToStudent(3, 3));
+    void should_AddGroupToStudent() {
+        Assertions.assertNotNull(studentGroupDao.addGroupToStudent(3, 3));
     }
 
     @Test
-    void should_RemoveStudentFromGroup() throws SQLException {
-        Assertions.assertTrue(studentDao.removeStudentFromGroup(2));
+    void should_RemoveStudentFromGroup() {
+        Assertions.assertTrue(studentGroupDao.removeStudentFromGroup(2));
     }
 
     @Test
-    void should_updateGroupForStudentId() throws SQLException {
-        Assertions.assertNotNull(studentDao.updateGroupForStudentId(1, 3));
+    void should_updateGroupForStudentId() {
+        Assertions.assertNotNull(studentGroupDao.updateGroupForStudentId(1, 3));
     }
 }

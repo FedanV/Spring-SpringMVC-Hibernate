@@ -8,27 +8,27 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import javax.persistence.EntityManager;
 import java.sql.SQLException;
 
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
-@JdbcTest
+@DataJpaTest
 @AutoConfigureTestDatabase(
         replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql(scripts = {"/databaseTestData/groups_table_test_data.sql"}, executionPhase = BEFORE_TEST_METHOD)
 class GroupDaoImplTest extends BaseDaoTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private EntityManager entityManager;
     private GroupDao groupDao;
 
     @BeforeEach
     void init() {
-        groupDao = new GroupDaoImpl(jdbcTemplate);
+        groupDao = new GroupDaoImpl(entityManager);
     }
 
     @Test
@@ -37,17 +37,22 @@ class GroupDaoImplTest extends BaseDaoTest {
     }
 
     @Test
-    void should_CreateGroup() throws SQLException {
-        Assertions.assertNotNull(groupDao.save(new Group("test4")));
+    void should_CreateGroup() {
+        Assertions.assertNotNull(groupDao.save(Group.builder()
+                .groupName("group4")
+                .build()));
     }
 
     @Test
-    void should_UpdateGroup() throws SQLException {
-        Assertions.assertNotNull(groupDao.save(new Group(2, "test5")));
+    void should_UpdateGroup() {
+        Assertions.assertNotNull(groupDao.save(Group.builder()
+                .id(2)
+                .groupName("group5")
+                .build()));
     }
 
     @Test
-    void should_DeleteGroup() throws SQLException {
+    void should_DeleteGroup() {
         Assertions.assertTrue(groupDao.delete(3));
     }
 

@@ -10,16 +10,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
 
+import javax.persistence.EntityManager;
 import java.sql.SQLException;
 
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
-@JdbcTest
+@DataJpaTest
 @AutoConfigureTestDatabase(
         replace = AutoConfigureTestDatabase.Replace.NONE
 )
@@ -27,27 +27,46 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 class UserDaoImplTest extends BaseDaoTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private EntityManager entityManager;
 
     private UserDao userDao;
 
     @BeforeEach
     void init() {
-        userDao = new UserDaoImpl(jdbcTemplate);
+        userDao = new UserDaoImpl(entityManager);
     }
 
     @Test
-    void should_CreateUser() throws SQLException {
-        Assertions.assertNotNull(userDao.save(new User(null,"name", "surname", "phone", "login", "pass", Role.ROLE_ADMIN, UserType.USER)));
+    void should_CreateUser() {
+        User user = User.builder()
+                .name("name")
+                .surname("surname")
+                .phone("phone12")
+                .login("login")
+                .password("pass")
+                .role(Role.NONE)
+                .userType(UserType.USER)
+                .build();
+        Assertions.assertNotNull(userDao.save(user));
     }
 
     @Test
-    void should_UpdateUser() throws SQLException {
-        Assertions.assertNotNull(userDao.save(new User(1, "name", "surname", "phone", "login", "pass", Role.ROLE_ADMIN, UserType.USER)));
+    void should_UpdateUser() {
+        User user = User.builder()
+                .id(1)
+                .name("name")
+                .surname("surname")
+                .phone("phone")
+                .login("login")
+                .password("pass")
+                .role(Role.NONE)
+                .userType(UserType.USER)
+                .build();
+        Assertions.assertNotNull(userDao.save(user));
     }
 
     @Test
-    void should_DeleteUser() throws SQLException {
+    void should_DeleteUser() {
         Assertions.assertTrue(userDao.delete(2));
     }
 

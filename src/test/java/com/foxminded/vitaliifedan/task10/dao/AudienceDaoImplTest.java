@@ -8,15 +8,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import javax.persistence.EntityManager;
 import java.sql.SQLException;
 
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
-@JdbcTest
+@DataJpaTest
 @AutoConfigureTestDatabase(
         replace = AutoConfigureTestDatabase.Replace.NONE
 )
@@ -24,26 +24,29 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 class AudienceDaoImplTest extends BaseDaoTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private EntityManager entityManager;
     private AudienceDao audienceDao;
 
     @BeforeEach
     void init() {
-        audienceDao = new AudienceDaoImpl(jdbcTemplate);
+        audienceDao = new AudienceDaoImpl(entityManager);
     }
 
     @Test
-    void should_CreateAudience() throws SQLException {
-        Assertions.assertNotNull(audienceDao.save(new Audience(null, 4)));
+    void should_CreateAudience() {
+        Assertions.assertNotNull(audienceDao.save(Audience.builder().roomNumber(4).build()));
     }
 
     @Test
-    void should_UpdateAudience() throws SQLException {
-        Assertions.assertNotNull(audienceDao.save(new Audience(2, 100)));
+    void should_UpdateAudience() {
+        Assertions.assertNotNull(audienceDao.save(Audience.builder()
+                .id(2)
+                .roomNumber(100)
+                .build()));
     }
 
     @Test
-    void should_DeleteAudience() throws SQLException {
+    void should_DeleteAudience() {
         Assertions.assertTrue(audienceDao.delete(3));
     }
 

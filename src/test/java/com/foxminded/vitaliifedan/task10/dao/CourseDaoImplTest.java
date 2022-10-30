@@ -8,15 +8,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import javax.persistence.EntityManager;
 import java.sql.SQLException;
 
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
-@JdbcTest
+@DataJpaTest
 @AutoConfigureTestDatabase(
         replace = AutoConfigureTestDatabase.Replace.NONE
 )
@@ -24,27 +24,30 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 class CourseDaoImplTest extends BaseDaoTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private EntityManager entityManager;
 
     private CourseDao courseDao;
 
     @BeforeEach
     void init() {
-        courseDao = new CourseDaoImpl(jdbcTemplate);
+        courseDao = new CourseDaoImpl(entityManager);
     }
 
     @Test
-    void should_CreateCourse() throws SQLException {
-        Assertions.assertNotNull(courseDao.save(new Course("course4")));
+    void should_CreateCourse() {
+        Assertions.assertNotNull(courseDao.save(Course.builder().courseName("course4").build()));
     }
 
     @Test
-    void should_UpdateCourse() throws SQLException {
-        Assertions.assertNotNull(courseDao.save(new Course(2, "course10")));
+    void should_UpdateCourse() {
+        Assertions.assertNotNull(courseDao.save(Course.builder()
+                .id(2)
+                .courseName("test2")
+                .build()));
     }
 
     @Test
-    void should_DeleteCourse() throws SQLException {
+    void should_DeleteCourse() {
         Assertions.assertTrue(courseDao.delete(3));
     }
 
