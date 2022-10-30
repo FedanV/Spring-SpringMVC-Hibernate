@@ -2,19 +2,15 @@ package com.foxminded.vitaliifedan.task10.dao.impl;
 
 import com.foxminded.vitaliifedan.task10.dao.AbstractCrudDao;
 import com.foxminded.vitaliifedan.task10.dao.UserDao;
-import com.foxminded.vitaliifedan.task10.exceptions.UserException;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,95 +19,74 @@ public class UserDaoImpl extends AbstractCrudDao<User, Integer> implements UserD
 
     private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 
-    private final JdbcTemplate jdbcTemplate;
+    private final EntityManager entityManager;
 
     @Autowired
-    public UserDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public UserDaoImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     @Override
     protected User create(User entity) {
         logger.debug("Start creating user with login {}", entity.getLogin());
-        String createUser = "INSERT INTO users(name, surname, phone, login, password, role, user_type) VALUES(?, ?, ?, ?, ?, ?, ?)";
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        int affectedRow = jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(createUser, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, entity.getName());
-            statement.setString(2, entity.getSurname());
-            statement.setString(3, entity.getPhone());
-            statement.setString(4, entity.getLogin());
-            statement.setString(5, entity.getPassword());
-            statement.setString(6, entity.getRole().toString());
-            statement.setString(7, entity.getUserType().toString());
-            return statement;
-        }, keyHolder);
-        if (affectedRow == 0) {
-            throw new UserException("User with login " + entity.getLogin() + " was not created");
-        }
-        int id = (int) keyHolder.getKeys().get("id");
+        entityManager.persist(entity);
         logger.debug("Finish creating user with login {}", entity.getLogin());
-        return new User(id, entity.getName(), entity.getSurname(), entity.getPhone(), entity.getLogin(), entity.getPassword(), entity.getRole(), entity.getUserType());
+        return entity;
     }
 
     @Override
     protected User update(User entity) {
         logger.debug("Start updating user with login {}", entity.getLogin());
-        String updateUser = "UPDATE users SET name=?, phone=?, surname=?, login=?, password=?, role=?, user_type=? WHERE id=?";
-        int affectedRow = jdbcTemplate.update(updateUser, entity.getName(), entity.getPhone(), entity.getSurname(), entity.getLogin(), entity.getPassword(),
-                entity.getRole().toString(), entity.getUserType().toString(), entity.getId());
-        if (affectedRow == 0) {
-            throw new UserException("User with login " + entity.getLogin() + " was not updated");
-        }
-        logger.debug("Finish updating user with login {}", entity.getLogin());
-        return new User(entity.getId(), entity.getName(), entity.getSurname(), entity.getPhone(), entity.getLogin(), entity.getPassword(), entity.getRole(), entity.getUserType());
+        entityManager.merge(entity);
+        return entity;
     }
 
     @Override
     public Boolean delete(Integer id) {
         logger.debug("Start deleting user with id={}", id);
-        String deleteUser = "DELETE FROM users WHERE id=?";
-        int affectedRow = jdbcTemplate.update(deleteUser, id);
-        if (affectedRow == 0) {
-            throw new UserException("User with id " + id + " was not deleted");
-        }
+        User user = entityManager.find(User.class, id);
+        entityManager.remove(user);
         logger.debug("Finish deleting user with id={}", id);
         return true;
     }
 
     @Override
     public List<User> getAll() {
-        String getAllUsers = "SELECT * FROM users";
-        return jdbcTemplate.query(getAllUsers, new BeanPropertyRowMapper<>(User.class));
+        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
 
     @Override
     public Optional<User> getById(Integer id) {
-        String getUserById = "SELECT * FROM users WHERE id=?";
-        return jdbcTemplate.query(getUserById, new BeanPropertyRowMapper<>(User.class), id)
-                .stream().findFirst();
+        return Optional.ofNullable(entityManager.find(User.class, id));
     }
 
     @Override
     public List<User> getUsersByUserType(UserType userType) {
-        String getUsersByUserType = "SELECT * FROM users WHERE user_type=?";
-        return jdbcTemplate.query(getUsersByUserType, new BeanPropertyRowMapper<>(User.class), userType.toString());
+        return entityManager.createQuery("SELECT u FROM User u WHERE u.userType=:userType", User.class)
+                .setParameter("userType", userType)
+                .getResultList();
     }
 
     @Override
     public Optional<User> findUserByPhone(String phone) {
-        String findUserByPhone = "SELECT * FROM users WHERE phone=?";
-        return jdbcTemplate.query(findUserByPhone, new BeanPropertyRowMapper<>(User.class), phone)
-                .stream().findFirst();
+        try {
+            return Optional.ofNullable(entityManager.createQuery("SELECT u FROM User u WHERE u.phone=:phone", User.class)
+                    .setParameter("phone", phone)
+                    .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public Optional<User> findUserByLogin(String login) {
-        String findUserByLogin = "SELECT * FROM users WHERE login=?";
-        return jdbcTemplate.query(findUserByLogin, new BeanPropertyRowMapper<>(User.class), login)
-                .stream().findFirst();
+        try {
+            return Optional.ofNullable(entityManager.createQuery("SELECT u FROM User u WHERE u.login=:login", User.class)
+                    .setParameter("login", login)
+                    .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
-
-
 
 }

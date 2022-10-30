@@ -47,6 +47,7 @@ public class LectureServiceImpl implements LectureService {
     public Optional<Lecture> findById(Integer id) {
         return lectureDao.getById(id);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Lecture create(Lecture lecture) {
@@ -67,6 +68,7 @@ public class LectureServiceImpl implements LectureService {
             throw e;
         }
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Boolean deletedById(Integer id) {
@@ -83,25 +85,32 @@ public class LectureServiceImpl implements LectureService {
         Optional<Lecture> lecture = lectureDao.getById(id);
         Map<String, String> filledLecture = new HashMap<>();
         if (lecture.isPresent()) {
-            String courseName = courseService.findById(lecture.get().getCourse().getId())
-                    .map(Course::getCourseName).orElse(null);
+            if (lecture.get().getCourse() != null) {
+                String courseName = courseService.findById(lecture.get().getCourse().getId())
+                        .map(Course::getCourseName).orElse(null);
+                filledLecture.put("course", courseName);
+            }
+            if (lecture.get().getTeacher() != null) {
+                String teacherName = userService.findById(lecture.get().getTeacher().getId())
+                        .map(teacher -> teacher.getName() + " " + teacher.getSurname()).orElse(null);
+                filledLecture.put("teacher", teacherName);
+            }
+            if(lecture.get().getGroup() != null) {
+                String groupName = groupService.findById(lecture.get().getGroup().getId())
+                        .map(Group::getGroupName).orElse(null);
+                filledLecture.put("group", groupName);
+            }
 
-            String teacherName = userService.findById(lecture.get().getTeacher().getId())
-                    .map(teacher -> teacher.getName() + " " + teacher.getSurname()).orElse(null);
+            if(lecture.get().getAudience() != null) {
+                String audience = audienceService.findById(lecture.get().getAudience().getId())
+                        .map(a -> String.valueOf(a.getRoomNumber())).orElse(null);
+                filledLecture.put("audience", audience);
+            }
 
-            String groupName = groupService.findById(lecture.get().getGroup().getId())
-                    .map(Group::getGroupName).orElse(null);
-
-            String audience = audienceService.findById(lecture.get().getAudience().getId())
-                    .map(a -> String.valueOf(a.getRoomNumber())).orElse(null);
-
-            filledLecture.put("course", courseName);
-            filledLecture.put("teacher", teacherName);
             filledLecture.put("lectureDate", lecture.get().getLectureDate().toString());
-            filledLecture.put("group", groupName);
             filledLecture.put("pair", lecture.get().getPairNumber().toString());
-            filledLecture.put("audience", audience);
             filledLecture.put("id", lecture.get().getId().toString());
+
         }
         return filledLecture;
     }

@@ -13,4 +13,5 @@ public interface UserDao extends CrudDao<User, Integer> {
     Optional<User> findUserByPhone(String phone);
 
     Optional<User> findUserByLogin(String login);
+
 }

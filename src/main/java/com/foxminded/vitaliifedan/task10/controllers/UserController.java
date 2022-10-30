@@ -8,7 +8,6 @@ import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.services.UserService;
 import com.foxminded.vitaliifedan.task10.services.validators.UserValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -144,7 +143,12 @@ public class UserController {
         if (result.hasErrors()) {
             return "university/registration";
         }
-        User registeredUser = new User(user.getLogin(), passwordEncoder.encode(user.getPassword()), Role.NONE, UserType.USER);
+        User registeredUser = User.builder()
+                .login(user.getLogin())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .role(Role.NONE)
+                .userType(UserType.USER)
+                .build();
         try {
             userService.create(registeredUser);
         } catch (UserException e) {

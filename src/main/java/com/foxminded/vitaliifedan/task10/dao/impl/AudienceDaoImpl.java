@@ -2,18 +2,14 @@ package com.foxminded.vitaliifedan.task10.dao.impl;
 
 import com.foxminded.vitaliifedan.task10.dao.AbstractCrudDao;
 import com.foxminded.vitaliifedan.task10.dao.AudienceDao;
-import com.foxminded.vitaliifedan.task10.exceptions.AudienceException;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,72 +18,57 @@ public class AudienceDaoImpl extends AbstractCrudDao<Audience, Integer> implemen
 
     private static final Logger logger = LoggerFactory.getLogger(AudienceDaoImpl.class);
 
-    private final JdbcTemplate jdbcTemplate;
+    private final EntityManager entityManager;
 
     @Autowired
-    public AudienceDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public AudienceDaoImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
+
 
     @Override
     protected Audience create(Audience entity) {
         logger.debug("Start creating audience {}", entity.getRoomNumber());
-        String createAudience = "INSERT INTO audience(room_number) VALUES(?)";
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        int affectedRow = jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(createAudience, Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1, entity.getRoomNumber());
-            return statement;
-        }, keyHolder);
-        if (affectedRow == 0) {
-            throw new AudienceException("Audience " + entity.getRoomNumber() + " was not created");
-        }
-        int id = (int) keyHolder.getKeys().get("id");
+        entityManager.persist(entity);
         logger.debug("Finish creating audience {}", entity.getRoomNumber());
-        return new Audience(id, entity.getRoomNumber());
+        return entity;
     }
 
     @Override
     protected Audience update(Audience entity) {
         logger.debug("Start updating Audience {}", entity.getRoomNumber());
-        String updateAudience = "UPDATE audience SET room_number=? WHERE id=?";
-        int affectedRow = jdbcTemplate.update(updateAudience, entity.getRoomNumber(), entity.getId());
-        if (affectedRow == 0) {
-            throw new AudienceException("Audience " + entity.getRoomNumber() + " was not updated");
-        }
+        entityManager.merge(entity);
         logger.debug("Finish updating Audience {}", entity.getRoomNumber());
-        return new Audience(entity.getId(), entity.getRoomNumber());
+        return entity;
     }
 
     @Override
     public Boolean delete(Integer id) {
         logger.debug("Start deleting Audience id={}", id);
-        String deleteAudience = "DELETE FROM audience WHERE id=?";
-        int affectedRow = jdbcTemplate.update(deleteAudience, id);
-        if (affectedRow == 0) {
-            throw new AudienceException("Audience with id " + id + " was not deleted");
-        }
+        Audience audience = entityManager.find(Audience.class, id);
+        entityManager.remove(audience);
         logger.debug("Finish deleting Audience id={}", id);
         return true;
     }
 
     @Override
     public List<Audience> getAll() {
-        String getAllAudiences = "SELECT * FROM audience";
-        return jdbcTemplate.query(getAllAudiences, new BeanPropertyRowMapper<>(Audience.class));
+        return entityManager.createQuery("SELECT a FROM Audience a", Audience.class).getResultList();
     }
 
     @Override
     public Optional<Audience> getById(Integer id) {
-        String getAudienceById = "SELECT * FROM audience WHERE id=?";
-        return jdbcTemplate.query(getAudienceById, new BeanPropertyRowMapper<>(Audience.class), id)
-                .stream().findFirst();
+        return Optional.ofNullable(entityManager.find(Audience.class, id));
     }
 
     @Override
     public Optional<Audience> findAudienceByRoomNumber(Integer roomNumber) {
-        String findAudienceByRoomNumber = "SELECT * FROM audience WHERE room_number=?";
-        return jdbcTemplate.query(findAudienceByRoomNumber, new BeanPropertyRowMapper<>(Audience.class), roomNumber)
-                .stream().findFirst();
+        try {
+            return Optional.ofNullable(entityManager.createQuery("SELECT a FROM Audience a WHERE a.roomNumber=:roomNumber", Audience.class)
+                    .setParameter("roomNumber", roomNumber)
+                    .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 }

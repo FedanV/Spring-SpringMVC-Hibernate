@@ -2,7 +2,7 @@ package com.foxminded.vitaliifedan.task10.controllers;
 
 import com.foxminded.vitaliifedan.task10.dto.LectureDTO;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
-import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
+import com.foxminded.vitaliifedan.task10.models.persons.User;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
@@ -64,14 +64,14 @@ public class LectureController {
 
     @PostMapping("/add")
     public String saveLecture(@ModelAttribute LectureDTO lectureDTO) {
-        Lecture lecture = new Lecture(
-                new Course(lectureDTO.getCourseId()),
-                new Teacher(lectureDTO.getTeacherId()),
-                LocalDate.parse(lectureDTO.getDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-                new Group(lectureDTO.getGroupId()),
-                lectureDTO.getPairNumber(),
-                new Audience(lectureDTO.getAudienceId())
-        );
+        Lecture lecture = Lecture.builder()
+                .course(Course.builder().id(lectureDTO.getCourseId()).build())
+                .teacher(User.builder().id(lectureDTO.getTeacherId()).build())
+                .group(Group.builder().id(lectureDTO.getGroupId()).build())
+                .audience(Audience.builder().id(lectureDTO.getAudienceId()).build())
+                .lectureDate(LocalDate.parse(lectureDTO.getDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .pairNumber(lectureDTO.getPairNumber())
+                .build();
         lectureService.create(lecture);
         return "redirect:/lectures";
     }
@@ -85,7 +85,7 @@ public class LectureController {
     @GetMapping("/{id}/edit")
     public String editLecture(@PathVariable("id") Integer id, Model model) {
         Optional<Lecture> lecture = lectureService.findById(id);
-        if(lecture.isPresent()) {
+        if (lecture.isPresent()) {
             LectureDTO lectureDTO = new LectureDTO(
                     lecture.get().getId(),
                     lecture.get().getCourse().getId(),
@@ -106,17 +106,17 @@ public class LectureController {
         return "university/lectures/editLecture";
     }
 
-    @PostMapping ("/{id}")
+    @PostMapping("/{id}")
     public String updateLecture(@PathVariable("id") Integer id, @ModelAttribute LectureDTO lectureDTO) {
-        Lecture lecture = new Lecture(
-                id,
-                new Course(lectureDTO.getCourseId()),
-                new Teacher(lectureDTO.getTeacherId()),
-                LocalDate.parse(lectureDTO.getDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-                new Group(lectureDTO.getGroupId()),
-                lectureDTO.getPairNumber(),
-                new Audience(lectureDTO.getAudienceId())
-        );
+        Lecture lecture = Lecture.builder()
+                .id(id)
+                .course(Course.builder().id(lectureDTO.getCourseId()).build())
+                .teacher(User.builder().id(lectureDTO.getTeacherId()).build())
+                .group(Group.builder().id(lectureDTO.getGroupId()).build())
+                .audience(Audience.builder().id(lectureDTO.getAudienceId()).build())
+                .lectureDate(LocalDate.parse(lectureDTO.getDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .pairNumber(lectureDTO.getPairNumber())
+                .build();
         lectureService.update(lecture);
         return "redirect:/lectures/" + id;
     }

@@ -2,7 +2,6 @@ package com.foxminded.vitaliifedan.task10.controllers;
 
 import com.foxminded.vitaliifedan.task10.exceptions.UserException;
 import com.foxminded.vitaliifedan.task10.models.persons.Role;
-import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.services.UserService;
@@ -38,7 +37,7 @@ public class TeacherController {
     }
 
     @GetMapping("/add")
-    public String addTeacher(@ModelAttribute("user") Teacher teacher, Model model) {
+    public String addTeacher(@ModelAttribute("user") User teacher, Model model) {
         model.addAttribute("roles", Role.values());
         return "university/teachers/addTeacher";
     }

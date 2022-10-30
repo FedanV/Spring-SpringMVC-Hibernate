@@ -1,11 +1,11 @@
 package com.foxminded.vitaliifedan.task10.services.impl;
 
-import com.foxminded.vitaliifedan.task10.dao.StudentDao;
-import com.foxminded.vitaliifedan.task10.dao.TeacherDao;
+import com.foxminded.vitaliifedan.task10.dao.StudentGroupDao;
+import com.foxminded.vitaliifedan.task10.dao.TeacherCourseDao;
 import com.foxminded.vitaliifedan.task10.dao.UserDao;
 import com.foxminded.vitaliifedan.task10.exceptions.UserException;
-import com.foxminded.vitaliifedan.task10.models.persons.Student;
-import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
+import com.foxminded.vitaliifedan.task10.models.persons.StudentGroup;
+import com.foxminded.vitaliifedan.task10.models.persons.TeacherCourse;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.services.UserService;
@@ -29,14 +29,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserDao userDao;
-    private final StudentDao studentDao;
-    private final TeacherDao teacherDao;
+    private final StudentGroupDao studentGroupDao;
+    private final TeacherCourseDao teacherCourseDao;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, StudentDao studentDao, TeacherDao teacherDao) {
+    public UserServiceImpl(UserDao userDao, StudentGroupDao studentGroupDao, TeacherCourseDao teacherCourseDao) {
         this.userDao = userDao;
-        this.studentDao = studentDao;
-        this.teacherDao = teacherDao;
+        this.studentGroupDao = studentGroupDao;
+        this.teacherCourseDao = teacherCourseDao;
     }
 
     @Transactional(readOnly = true)
@@ -73,6 +73,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw e;
         }
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Boolean deletedById(Integer id) {
@@ -85,19 +86,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Transactional
-    public Student addGroupToStudent(Integer userId, Integer groupId) {
+    public StudentGroup addGroupToStudent(Integer userId, Integer groupId) {
         try {
-            return studentDao.addGroupToStudent(userId, groupId);
+            return studentGroupDao.addGroupToStudent(userId, groupId);
         } catch (UserException e) {
             logger.error("Exception happened when Group is adding to student", e);
             throw e;
         }
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Boolean removeStudentFromGroup(Integer userId) {
         try {
-            return studentDao.removeStudentFromGroup(userId);
+            return studentGroupDao.removeStudentFromGroup(userId);
         } catch (UserException e) {
             logger.error("Exception happened when removing Student from Group", e);
             throw e;
@@ -105,9 +107,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Transactional
-    public Student updateGroupForStudent(Integer userId, Integer groupId) {
+    public StudentGroup updateGroupForStudent(Integer userId, Integer groupId) {
         try {
-            return studentDao.updateGroupForStudentId(userId, groupId);
+            return studentGroupDao.updateGroupForStudentId(userId, groupId);
         } catch (UserException e) {
             logger.error("Exception happened when updating group", e);
             throw e;
@@ -115,9 +117,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Transactional
-    public Teacher addCourseToTeacher(Integer teacherId, Integer courseId) {
+    public TeacherCourse addCourseToTeacher(Integer teacherId, Integer courseId) {
         try {
-            return teacherDao.addCourseToTeacher(teacherId, courseId);
+            return teacherCourseDao.addCourseToTeacher(teacherId, courseId);
         } catch (UserException e) {
             logger.error("Exception happened when adding Course to Teacher", e);
             throw e;
@@ -127,7 +129,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public Boolean removeCourseFromTeacher(Integer teacherId, Integer courseId) {
         try {
-            return teacherDao.removeCourseByTeacherId(teacherId, courseId);
+            return teacherCourseDao.removeCourseByTeacherId(teacherId, courseId);
         } catch (UserException e) {
             logger.error("Exception happened when removing Teacher course", e);
             throw e;
@@ -135,9 +137,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Transactional
-    public Teacher updateCourseForTeacher(Integer teacherId, Integer newCourseId, Integer oldCourseId) {
+    public TeacherCourse updateCourseForTeacher(Integer teacherId, Integer newCourseId, Integer oldCourseId) {
         try {
-            return teacherDao.updateCourseForTeacherId(teacherId, newCourseId, oldCourseId);
+            return teacherCourseDao.updateCourseForTeacherId(teacherId, newCourseId, oldCourseId);
         } catch (UserException e) {
             logger.error("Exception happened when updating Teacher course", e);
             throw e;

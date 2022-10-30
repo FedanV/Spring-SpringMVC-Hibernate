@@ -1,9 +1,11 @@
 package com.foxminded.vitaliifedan.task10.dao;
 
-import com.foxminded.vitaliifedan.task10.models.HasId;
+import com.foxminded.vitaliifedan.task10.models.BaseEntity;
+
+import java.io.Serializable;
 
 
-public abstract class AbstractCrudDao<T extends HasId<K>, K> implements CrudDao<T, K> {
+public abstract class AbstractCrudDao<T extends BaseEntity<K>, K extends Serializable> implements CrudDao<T, K> {
 
     @Override
     public T save(T entity) {
@@ -13,4 +15,5 @@ public abstract class AbstractCrudDao<T extends HasId<K>, K> implements CrudDao<
     protected abstract T create(T entity);
 
     protected abstract T update(T entity);
+
 }
