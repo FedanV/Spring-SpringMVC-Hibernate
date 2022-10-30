@@ -34,7 +34,15 @@ class UserControllerTest {
 
     @Test
     void findAll() throws Exception {
-        User user = new User("name", "surname", "phone", "login", "pass", Role.NONE, UserType.USER);
+        User user = User.builder()
+                .name("name")
+                .surname("surname")
+                .phone("phone")
+                .login("login")
+                .password("pass")
+                .role(Role.NONE)
+                .userType(UserType.USER)
+                .build();
         doReturn(List.of(user)).when(userService).getUserByUserType(UserType.USER);
         mockMvc.perform(MockMvcRequestBuilders.get("/users"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
@@ -50,8 +58,7 @@ class UserControllerTest {
                         MockMvcResultMatchers.status().is2xxSuccessful(),
                         MockMvcResultMatchers.view().name("university/users/addUser"),
                         MockMvcResultMatchers.model().attributeExists("roles", "user"),
-                        MockMvcResultMatchers.model().attribute("roles", Role.values()),
-                        MockMvcResultMatchers.model().attribute("user", new User())
+                        MockMvcResultMatchers.model().attribute("roles", Role.values())
                 );
     }
 
@@ -111,7 +118,15 @@ class UserControllerTest {
 
     @Test
     void checkUserExceptionWhenCreateUser() throws Exception {
-        Mockito.doThrow(UserException.class).when(userService).create(new User("name", "surname", "phone1", "login", "password", Role.NONE, UserType.USER));
+        User user = User.builder()
+                .name("name")
+                .surname("surname")
+                .phone("phone1")
+                .login("login")
+                .password("password")
+                .role(Role.NONE)
+                .build();
+        Mockito.doThrow(UserException.class).when(userService).create(Mockito.any(User.class));
         Mockito.doReturn("").when(userValidationService).validatePhoneNumber(Mockito.anyString());
         mockMvc.perform(MockMvcRequestBuilders.post("/users/add")
                         .param("name", "name")
@@ -119,8 +134,7 @@ class UserControllerTest {
                         .param("phone", "phone1")
                         .param("login", "login")
                         .param("password", "password")
-                        .param("role", Role.NONE.toString())
-                        .param("userType", UserType.USER.toString()))
+                        .param("role", Role.NONE.toString()))
                 .andExpectAll(
                         MockMvcResultMatchers.status().is2xxSuccessful(),
                         MockMvcResultMatchers.view().name("university/error")
@@ -129,9 +143,19 @@ class UserControllerTest {
 
     @Test
     void checkUserExceptionWhenUpdateUser() throws Exception {
-        Mockito.doThrow(UserException.class).when(userService).update(new User(1, "name", "surname", "phone1", "login", "password", Role.NONE, UserType.USER));
+        User user = User.builder()
+                .id(1)
+                .name("name")
+                .surname("surname")
+                .phone("phone")
+                .login("login")
+                .password("pass")
+                .role(Role.NONE)
+                .userType(UserType.USER)
+                .build();
+        Mockito.doThrow(UserException.class).when(userService).update(Mockito.any(User.class));
         Mockito.doReturn("").when(userValidationService).validatePhoneNumber(Mockito.anyString());
-        Mockito.doReturn(Optional.of(new User(1, "name", "surname", "phone1", "login", "password", Role.NONE, UserType.USER))).when(userService).findById(Mockito.anyInt());
+        Mockito.doReturn(Optional.of(user)).when(userService).findById(Mockito.anyInt());
         mockMvc.perform(MockMvcRequestBuilders.post("/users/1")
                         .param("id", "1")
                         .param("name", "name")

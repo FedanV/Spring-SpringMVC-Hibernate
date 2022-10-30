@@ -32,7 +32,7 @@ class CourseControllerTest {
 
     @Test
     void getCourses() throws Exception {
-        Course course = new Course("Math");
+        Course course = Course.builder().courseName("Math").build();
         Mockito.doReturn(List.of(course)).when(courseService).findAll();
         mockMvc.perform(MockMvcRequestBuilders.get("/courses"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
@@ -47,8 +47,7 @@ class CourseControllerTest {
                 .andExpectAll(
                         MockMvcResultMatchers.status().is2xxSuccessful(),
                         MockMvcResultMatchers.view().name("university/courses/addCourse"),
-                        MockMvcResultMatchers.model().attributeExists("course"),
-                        MockMvcResultMatchers.model().attribute("course", new Course())
+                        MockMvcResultMatchers.model().attributeExists("course")
                 );
     }
 
@@ -65,7 +64,7 @@ class CourseControllerTest {
 
     @Test
     void showCourse() throws Exception {
-        Course course = new Course();
+        Course course = Course.builder().build();
         Mockito.doReturn(Optional.of(course)).when(courseService).findById(Mockito.anyInt());
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/edit"))
                 .andExpectAll(
@@ -99,7 +98,7 @@ class CourseControllerTest {
 
     @Test
     void checkCourseExceptionWhenCreateCourse() throws Exception {
-        Mockito.doThrow(CourseException.class).when(courseService).create(new Course("test"));
+        Mockito.doThrow(CourseException.class).when(courseService).create(Mockito.any(Course.class));
         Mockito.doReturn("").when(courseValidationService).validateCourseName(Mockito.anyString());
         mockMvc.perform((MockMvcRequestBuilders.post("/courses/addCourse"))
                 .param("courseName", "test")
@@ -111,7 +110,10 @@ class CourseControllerTest {
 
     @Test
     void checkCourseExceptionWhenUpdateCourse() throws Exception {
-        Mockito.doThrow(CourseException.class).when(courseService).update(new Course(1, "test"));
+        Mockito.doThrow(CourseException.class).when(courseService).update(Course.builder()
+                .id(1)
+                .courseName("test")
+                .build());
         Mockito.doReturn("").when(courseValidationService).validateCourseName(Mockito.anyString());
         mockMvc.perform((MockMvcRequestBuilders.post("/courses/1"))
                 .param("courseName", "test")

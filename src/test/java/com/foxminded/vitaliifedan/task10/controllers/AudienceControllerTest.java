@@ -1,9 +1,7 @@
 package com.foxminded.vitaliifedan.task10.controllers;
 
 import com.foxminded.vitaliifedan.task10.exceptions.AudienceException;
-import com.foxminded.vitaliifedan.task10.exceptions.CourseException;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
-import com.foxminded.vitaliifedan.task10.models.schedules.Course;
 import com.foxminded.vitaliifedan.task10.services.AudienceService;
 import com.foxminded.vitaliifedan.task10.services.validators.AudienceValidationService;
 import org.junit.jupiter.api.Test;
@@ -34,7 +32,7 @@ class AudienceControllerTest {
 
     @Test
     void getAudiences() throws Exception {
-        Audience audience = new Audience(10);
+        Audience audience = Audience.builder().id(10).build();
         Mockito.doReturn(List.of(audience)).when(audienceService).findAll();
         mockMvc.perform(MockMvcRequestBuilders.get("/audiences"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
@@ -49,8 +47,7 @@ class AudienceControllerTest {
                 .andExpectAll(
                         MockMvcResultMatchers.status().is2xxSuccessful(),
                         MockMvcResultMatchers.view().name("university/audiences/addAudience"),
-                        MockMvcResultMatchers.model().attributeExists("audience"),
-                        MockMvcResultMatchers.model().attribute("audience", new Audience())
+                        MockMvcResultMatchers.model().attributeExists("audience")
                 );
     }
 
@@ -67,7 +64,7 @@ class AudienceControllerTest {
 
     @Test
     void showAudience() throws Exception {
-        Audience audience = new Audience();
+        Audience audience = Audience.builder().build();
         Mockito.doReturn(Optional.of(audience)).when(audienceService).findById(Mockito.anyInt());
         mockMvc.perform(MockMvcRequestBuilders.get("/audiences/1/edit"))
                 .andExpectAll(
@@ -102,7 +99,7 @@ class AudienceControllerTest {
 
     @Test
     void checkAudienceExceptionWhenCreateAudience() throws Exception {
-        Mockito.doThrow(AudienceException.class).when(audienceService).create(new Audience(null, 1));
+        Mockito.doThrow(AudienceException.class).when(audienceService).create(Mockito.any(Audience.class));
         Mockito.doReturn("").when(audienceValidationService).validateRoomNumber(Mockito.anyInt());
         mockMvc.perform((MockMvcRequestBuilders.post("/audiences/addAudience"))
                 .param("roomNumber", "1")
@@ -114,7 +111,11 @@ class AudienceControllerTest {
 
     @Test
     void checkAudienceExceptionWhenUpdateAudience() throws Exception {
-        Mockito.doThrow(AudienceException.class).when(audienceService).update(new Audience(1, 1));
+        Mockito.doThrow(AudienceException.class).when(audienceService).update(
+                Audience.builder()
+                        .id(1)
+                        .roomNumber(1)
+                        .build());
         Mockito.doReturn("").when(audienceValidationService).validateRoomNumber(Mockito.anyInt());
         mockMvc.perform((MockMvcRequestBuilders.post("/audiences/1"))
                 .param("roomNumber", "1")

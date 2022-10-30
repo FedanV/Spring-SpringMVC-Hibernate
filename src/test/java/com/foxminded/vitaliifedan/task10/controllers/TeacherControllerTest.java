@@ -2,7 +2,6 @@ package com.foxminded.vitaliifedan.task10.controllers;
 
 import com.foxminded.vitaliifedan.task10.exceptions.UserException;
 import com.foxminded.vitaliifedan.task10.models.persons.Role;
-import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.services.UserService;
@@ -35,7 +34,15 @@ class TeacherControllerTest {
 
     @Test
     void getTeachers() throws Exception {
-        User teacher = new User("name", "surname", "phone", "login", "pass", Role.ROLE_TEACHER, UserType.TEACHER);
+        User teacher = User.builder()
+                .name("name")
+                .surname("surname")
+                .phone("phone")
+                .login("login")
+                .password("pass")
+                .role(Role.ROLE_TEACHER)
+                .userType(UserType.TEACHER)
+                .build();
         doReturn(List.of(teacher)).when(userService).getUserByUserType(UserType.TEACHER);
         mockMvc.perform(MockMvcRequestBuilders.get("/teachers"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
@@ -53,7 +60,7 @@ class TeacherControllerTest {
                         MockMvcResultMatchers.view().name("university/teachers/addTeacher"),
                         MockMvcResultMatchers.model().attributeExists("roles", "user"),
                         MockMvcResultMatchers.model().attribute("roles", Role.values()),
-                        MockMvcResultMatchers.model().attribute("user", new Teacher())
+                        MockMvcResultMatchers.model().attribute("user", new User())
                 );
     }
 
@@ -113,7 +120,16 @@ class TeacherControllerTest {
 
     @Test
     void checkUserExceptionWhenCreateTeacher() throws Exception {
-        Mockito.doThrow(UserException.class).when(userService).create(new User("name", "surname", "phone1", "login", "password", Role.NONE, UserType.TEACHER));
+        User teacher = User.builder()
+                .name("name")
+                .surname("surname")
+                .phone("phone")
+                .login("login")
+                .password("pass")
+                .role(Role.ROLE_TEACHER)
+                .userType(UserType.TEACHER)
+                .build();
+        Mockito.doThrow(UserException.class).when(userService).create(Mockito.any(User.class));
         Mockito.doReturn("").when(userValidationService).validatePhoneNumber(Mockito.anyString());
         mockMvc.perform(MockMvcRequestBuilders.post("/teachers/add")
                         .param("name", "name")
@@ -131,9 +147,19 @@ class TeacherControllerTest {
 
     @Test
     void checkUserExceptionWhenUpdateTeacher() throws Exception {
-        Mockito.doThrow(UserException.class).when(userService).update(new User(1, "name", "surname", "phone1", "login", "password", Role.NONE, UserType.TEACHER));
+        User teacher = User.builder()
+                .id(1)
+                .name("name")
+                .surname("surname")
+                .phone("phone")
+                .login("login")
+                .password("pass")
+                .role(Role.ROLE_TEACHER)
+                .userType(UserType.TEACHER)
+                .build();
+        Mockito.doThrow(UserException.class).when(userService).update(teacher);
         Mockito.doReturn("").when(userValidationService).validatePhoneNumber(Mockito.anyString());
-        Mockito.doReturn(Optional.of(new User(1, "name", "surname", "phone1", "login", "password", Role.NONE, UserType.USER))).when(userService).findById(Mockito.anyInt());
+        Mockito.doReturn(Optional.of(teacher)).when(userService).findById(Mockito.anyInt());
         mockMvc.perform(MockMvcRequestBuilders.post("/teachers/1")
                         .param("id", "1")
                         .param("name", "name")

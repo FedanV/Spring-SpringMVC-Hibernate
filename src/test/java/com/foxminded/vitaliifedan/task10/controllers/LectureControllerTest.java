@@ -1,12 +1,7 @@
 package com.foxminded.vitaliifedan.task10.controllers;
 
-
-import com.foxminded.vitaliifedan.task10.dto.LectureDTO;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
-import com.foxminded.vitaliifedan.task10.models.persons.Role;
-import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
-import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
 import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
@@ -45,7 +40,15 @@ class LectureControllerTest {
 
     @Test
     void getLectures() throws Exception {
-        Lecture lecture = new Lecture(1, new Course(), new Teacher(), LocalDate.now(), new Group(), 4, new Audience());
+        Lecture lecture = Lecture.builder()
+                .id(1)
+                .course(Course.builder().build())
+                .teacher(User.builder().build())
+                .lectureDate(LocalDate.now())
+                .group(Group.builder().build())
+                .pairNumber(4)
+                .audience(Audience.builder().build())
+                .build();
         Mockito.doReturn(List.of(lecture)).when(lectureService).findAll();
         Mockito.doReturn(Map.of("course", "Course1")).when(lectureService).getFilledLecture(Mockito.anyInt());
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures"))
@@ -82,15 +85,15 @@ class LectureControllerTest {
 
     @Test
     void editLecture() throws Exception {
-        Lecture lecture = new Lecture(
-                1,
-                new Course(1),
-                new Teacher(2),
-                LocalDate.now(),
-                new Group(3),
-                4,
-                new Audience(4)
-        );
+        Lecture lecture = Lecture.builder()
+                .id(1)
+                .course(Course.builder().id(1).build())
+                .teacher(User.builder().id(2).build())
+                .lectureDate(LocalDate.now())
+                .group(Group.builder().id(1).build())
+                .pairNumber(4)
+                .audience(Audience.builder().id(4).build())
+                .build();
         Mockito.doReturn(Optional.of(lecture)).when(lectureService).findById(Mockito.anyInt());
         mockMvc.perform(MockMvcRequestBuilders.get("/lectures/1/edit"))
                 .andExpectAll(
