@@ -3,7 +3,6 @@ package com.foxminded.vitaliifedan.task10.models.persons;
 import com.foxminded.vitaliifedan.task10.models.BaseEntity;
 import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
