@@ -41,7 +41,6 @@ class UserControllerTest {
                 .login("login")
                 .password("pass")
                 .role(Role.NONE)
-                .userType(UserType.USER)
                 .build();
         doReturn(List.of(user)).when(userService).getUserByUserType(UserType.USER);
         mockMvc.perform(MockMvcRequestBuilders.get("/users"))
@@ -151,7 +150,6 @@ class UserControllerTest {
                 .login("login")
                 .password("pass")
                 .role(Role.NONE)
-                .userType(UserType.USER)
                 .build();
         Mockito.doThrow(UserException.class).when(userService).update(Mockito.any(User.class));
         Mockito.doReturn("").when(userValidationService).validatePhoneNumber(Mockito.anyString());

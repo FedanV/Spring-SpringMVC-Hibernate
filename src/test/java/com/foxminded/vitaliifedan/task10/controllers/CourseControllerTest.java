@@ -110,10 +110,7 @@ class CourseControllerTest {
 
     @Test
     void checkCourseExceptionWhenUpdateCourse() throws Exception {
-        Mockito.doThrow(CourseException.class).when(courseService).update(Course.builder()
-                .id(1)
-                .courseName("test")
-                .build());
+        Mockito.doThrow(CourseException.class).when(courseService).update(Mockito.any(Course.class));
         Mockito.doReturn("").when(courseValidationService).validateCourseName(Mockito.anyString());
         mockMvc.perform((MockMvcRequestBuilders.post("/courses/1"))
                 .param("courseName", "test")

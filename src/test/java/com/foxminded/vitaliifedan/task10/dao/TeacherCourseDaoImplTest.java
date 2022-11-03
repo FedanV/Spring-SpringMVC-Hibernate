@@ -19,8 +19,8 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 @AutoConfigureTestDatabase(
         replace = AutoConfigureTestDatabase.Replace.NONE
 )
-@Sql(scripts = {"/databaseTestData/users_table_test_data.sql", "/databaseTestData/course_table_test_data.sql",
-        "/databaseTestData/teacher_course_test_data.sql"}, executionPhase = BEFORE_TEST_METHOD)
+@Sql(scripts = {"/databaseTestData/course_table_test_data.sql", "/databaseTestData/teacher_test_data.sql"},
+        executionPhase = BEFORE_TEST_METHOD)
 class TeacherCourseDaoImplTest extends BaseDaoTest {
 
     @Autowired

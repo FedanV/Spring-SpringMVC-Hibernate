@@ -41,7 +41,6 @@ class TeacherControllerTest {
                 .login("login")
                 .password("pass")
                 .role(Role.ROLE_TEACHER)
-                .userType(UserType.TEACHER)
                 .build();
         doReturn(List.of(teacher)).when(userService).getUserByUserType(UserType.TEACHER);
         mockMvc.perform(MockMvcRequestBuilders.get("/teachers"))
@@ -59,8 +58,7 @@ class TeacherControllerTest {
                         MockMvcResultMatchers.status().is2xxSuccessful(),
                         MockMvcResultMatchers.view().name("university/teachers/addTeacher"),
                         MockMvcResultMatchers.model().attributeExists("roles", "user"),
-                        MockMvcResultMatchers.model().attribute("roles", Role.values()),
-                        MockMvcResultMatchers.model().attribute("user", new User())
+                        MockMvcResultMatchers.model().attribute("roles", Role.values())
                 );
     }
 
@@ -127,7 +125,6 @@ class TeacherControllerTest {
                 .login("login")
                 .password("pass")
                 .role(Role.ROLE_TEACHER)
-                .userType(UserType.TEACHER)
                 .build();
         Mockito.doThrow(UserException.class).when(userService).create(Mockito.any(User.class));
         Mockito.doReturn("").when(userValidationService).validatePhoneNumber(Mockito.anyString());
@@ -155,7 +152,6 @@ class TeacherControllerTest {
                 .login("login")
                 .password("pass")
                 .role(Role.ROLE_TEACHER)
-                .userType(UserType.TEACHER)
                 .build();
         Mockito.doThrow(UserException.class).when(userService).update(teacher);
         Mockito.doReturn("").when(userValidationService).validatePhoneNumber(Mockito.anyString());

@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import javax.persistence.EntityManager;
-import java.sql.SQLException;
 
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
@@ -19,8 +18,7 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 @AutoConfigureTestDatabase(
         replace = AutoConfigureTestDatabase.Replace.NONE
 )
-@Sql(scripts = {"/databaseTestData/users_table_test_data.sql", "/databaseTestData/groups_table_test_data.sql",
-        "/databaseTestData/student_group_test_data.sql"},
+@Sql(scripts = {"/databaseTestData/groups_table_test_data.sql", "/databaseTestData/student_test_data.sql"},
         executionPhase = BEFORE_TEST_METHOD)
 class StudentDaoImplTest extends BaseDaoTest {
 

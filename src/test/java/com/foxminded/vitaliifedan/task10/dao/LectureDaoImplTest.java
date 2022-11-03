@@ -3,7 +3,7 @@ package com.foxminded.vitaliifedan.task10.dao;
 import com.foxminded.vitaliifedan.task10.containers.BaseDaoTest;
 import com.foxminded.vitaliifedan.task10.dao.impl.LectureDaoImpl;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
-import com.foxminded.vitaliifedan.task10.models.persons.User;
+import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
 import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
@@ -26,7 +26,7 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
         replace = AutoConfigureTestDatabase.Replace.NONE
 )
 @Sql(scripts = {"/databaseTestData/audience_table_test_data.sql", "/databaseTestData/course_table_test_data.sql",
-        "/databaseTestData/groups_table_test_data.sql", "/databaseTestData/users_table_test_data.sql",
+        "/databaseTestData/groups_table_test_data.sql", "/databaseTestData/teacher_test_data.sql",
         "/databaseTestData/lecture_table_test_data.sql"}, executionPhase = BEFORE_TEST_METHOD)
 class LectureDaoImplTest extends BaseDaoTest {
 
@@ -45,7 +45,7 @@ class LectureDaoImplTest extends BaseDaoTest {
         Lecture lecture = Lecture.builder()
                 .id(1)
                 .course(Course.builder().id(1).build())
-                .teacher(User.builder().id(1).build())
+                .teacher(Teacher.builder().id(1).build())
                 .lectureDate(LocalDate.now())
                 .group(Group.builder().id(1).build())
                 .pairNumber(4)
@@ -59,7 +59,7 @@ class LectureDaoImplTest extends BaseDaoTest {
         Lecture lecture = Lecture.builder()
                 .id(2)
                 .course(Course.builder().id(1).build())
-                .teacher(User.builder().id(1).build())
+                .teacher(Teacher.builder().id(1).build())
                 .lectureDate(LocalDate.now())
                 .group(Group.builder().id(1).build())
                 .pairNumber(4)

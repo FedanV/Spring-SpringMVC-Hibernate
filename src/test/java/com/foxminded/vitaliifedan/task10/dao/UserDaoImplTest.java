@@ -15,7 +15,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 
 import javax.persistence.EntityManager;
-import java.sql.SQLException;
 
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
@@ -45,7 +44,6 @@ class UserDaoImplTest extends BaseDaoTest {
                 .login("login")
                 .password("pass")
                 .role(Role.NONE)
-                .userType(UserType.USER)
                 .build();
         Assertions.assertNotNull(userDao.save(user));
     }
@@ -60,7 +58,6 @@ class UserDaoImplTest extends BaseDaoTest {
                 .login("login")
                 .password("pass")
                 .role(Role.NONE)
-                .userType(UserType.USER)
                 .build();
         Assertions.assertNotNull(userDao.save(user));
     }

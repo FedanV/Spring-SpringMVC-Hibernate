@@ -2,6 +2,7 @@ package com.foxminded.vitaliifedan.task10.controllers;
 
 import com.foxminded.vitaliifedan.task10.exceptions.UserException;
 import com.foxminded.vitaliifedan.task10.models.persons.Role;
+import com.foxminded.vitaliifedan.task10.models.persons.Student;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.services.UserService;
@@ -41,7 +42,6 @@ class StudentControllerTest {
                 .login("login")
                 .password("pass")
                 .role(Role.ROLE_STUDENT)
-                .userType(UserType.STUDENT)
                 .build();
         doReturn(List.of(student)).when(userService).getUserByUserType(UserType.STUDENT);
         mockMvc.perform(MockMvcRequestBuilders.get("/students"))
@@ -59,8 +59,7 @@ class StudentControllerTest {
                         MockMvcResultMatchers.status().is2xxSuccessful(),
                         MockMvcResultMatchers.view().name("university/students/addStudent"),
                         MockMvcResultMatchers.model().attributeExists("roles", "user"),
-                        MockMvcResultMatchers.model().attribute("roles", Role.values()),
-                        MockMvcResultMatchers.model().attribute("user", new User())
+                        MockMvcResultMatchers.model().attribute("roles", Role.values())
                 );
     }
 
@@ -69,17 +68,16 @@ class StudentControllerTest {
     void saveStudent() throws Exception {
         Mockito.doReturn("").when(userValidationService).validatePhoneNumber(Mockito.anyString());
         mockMvc.perform(MockMvcRequestBuilders.post("/students/add")
-                .param("name", "Ivan")
-                .param("surname", "Ivanov")
-                .param("phone", "123455")
-                .param("login", "test")
-                .param("password", "1234")
-                .param("role", Role.NONE.toString())
-                .param("userType", UserType.STUDENT.toString())
-        ).andExpectAll(
-                MockMvcResultMatchers.status().is3xxRedirection(),
-                MockMvcResultMatchers.redirectedUrl("/students")
-        );
+                        .param("name", "Ivan")
+                        .param("surname", "Ivanov")
+                        .param("phone", "123455")
+                        .param("login", "test")
+                        .param("password", "1234")
+                        .param("role", Role.NONE.toString()))
+                .andExpectAll(
+                        MockMvcResultMatchers.status().is3xxRedirection(),
+                        MockMvcResultMatchers.redirectedUrl("/students")
+                );
     }
 
     @Test
@@ -127,7 +125,6 @@ class StudentControllerTest {
                 .login("login")
                 .password("pass")
                 .role(Role.ROLE_STUDENT)
-                .userType(UserType.STUDENT)
                 .build();
         Mockito.doThrow(UserException.class).when(userService).create(Mockito.any(User.class));
         Mockito.doReturn("").when(userValidationService).validatePhoneNumber(Mockito.anyString());
@@ -137,8 +134,7 @@ class StudentControllerTest {
                         .param("phone", "phone1")
                         .param("login", "login")
                         .param("password", "password")
-                        .param("role", Role.NONE.toString())
-                        .param("userType", UserType.TEACHER.toString()))
+                        .param("role", Role.NONE.toString()))
                 .andExpectAll(
                         MockMvcResultMatchers.status().is2xxSuccessful(),
                         MockMvcResultMatchers.view().name("university/error")
@@ -155,7 +151,6 @@ class StudentControllerTest {
                 .login("login")
                 .password("pass")
                 .role(Role.ROLE_STUDENT)
-                .userType(UserType.STUDENT)
                 .build();
         Mockito.doThrow(UserException.class).when(userService).update(student);
         Mockito.doReturn("").when(userValidationService).validatePhoneNumber(Mockito.anyString());
@@ -167,8 +162,7 @@ class StudentControllerTest {
                         .param("phone", "phone1")
                         .param("login", "login")
                         .param("password", "password")
-                        .param("role", Role.NONE.toString())
-                        .param("userType", UserType.STUDENT.toString()))
+                        .param("role", Role.NONE.toString()))
                 .andExpectAll(
                         MockMvcResultMatchers.status().is2xxSuccessful(),
                         MockMvcResultMatchers.view().name("university/error")
@@ -195,8 +189,7 @@ class StudentControllerTest {
                         .param("phone", "123456")
                         .param("login", "login")
                         .param("password", "password")
-                        .param("role", Role.NONE.toString())
-                        .param("userType", UserType.STUDENT.toString()))
+                        .param("role", Role.NONE.toString()))
                 .andExpectAll(
                         MockMvcResultMatchers.status().is2xxSuccessful(),
                         MockMvcResultMatchers.view().name("university/students/addStudent"),

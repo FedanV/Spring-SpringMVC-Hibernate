@@ -1,7 +1,7 @@
 package com.foxminded.vitaliifedan.task10.controllers;
 
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
-import com.foxminded.vitaliifedan.task10.models.persons.User;
+import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
 import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
@@ -42,12 +42,12 @@ class LectureControllerTest {
     void getLectures() throws Exception {
         Lecture lecture = Lecture.builder()
                 .id(1)
-                .course(Course.builder().build())
-                .teacher(User.builder().build())
+                .course(new Course())
+                .teacher(new Teacher())
                 .lectureDate(LocalDate.now())
-                .group(Group.builder().build())
+                .group(new Group())
                 .pairNumber(4)
-                .audience(Audience.builder().build())
+                .audience(new Audience())
                 .build();
         Mockito.doReturn(List.of(lecture)).when(lectureService).findAll();
         Mockito.doReturn(Map.of("course", "Course1")).when(lectureService).getFilledLecture(Mockito.anyInt());
@@ -88,7 +88,7 @@ class LectureControllerTest {
         Lecture lecture = Lecture.builder()
                 .id(1)
                 .course(Course.builder().id(1).build())
-                .teacher(User.builder().id(2).build())
+                .teacher(Teacher.builder().id(2).build())
                 .lectureDate(LocalDate.now())
                 .group(Group.builder().id(1).build())
                 .pairNumber(4)
