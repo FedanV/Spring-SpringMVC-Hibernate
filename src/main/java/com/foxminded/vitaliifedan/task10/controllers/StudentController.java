@@ -2,6 +2,7 @@ package com.foxminded.vitaliifedan.task10.controllers;
 
 import com.foxminded.vitaliifedan.task10.exceptions.UserException;
 import com.foxminded.vitaliifedan.task10.models.persons.Role;
+import com.foxminded.vitaliifedan.task10.models.persons.Student;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.services.UserService;
@@ -38,13 +39,13 @@ public class StudentController {
 
 
     @GetMapping("/add")
-    public String addStudent(@ModelAttribute("user") User student, Model model) {
+    public String addStudent(@ModelAttribute("user") Student student, Model model) {
         model.addAttribute("roles", Role.values());
         return "university/students/addStudent";
     }
 
     @PostMapping("/add")
-    public String saveStudent(@ModelAttribute("user") @Valid User student, BindingResult result, Model model) {
+    public String saveStudent(@ModelAttribute("user") @Valid Student student, BindingResult result, Model model) {
         String err = userValidationService.validatePhoneNumber(student.getPhone());
         if (!err.isEmpty()) {
             result.rejectValue("phone", "", err);
@@ -53,7 +54,6 @@ public class StudentController {
             model.addAttribute("roles", Role.values());
             return "university/students/addStudent";
         }
-        student.setUserType(UserType.STUDENT);
         try {
             userService.create(student);
         } catch (UserException e) {
@@ -76,7 +76,7 @@ public class StudentController {
     }
 
     @PostMapping("/{id}")
-    public String updateStudent(@PathVariable("id") Integer id, @ModelAttribute("user") @Valid User student, BindingResult result, Model model) {
+    public String updateStudent(@PathVariable("id") Integer id, @ModelAttribute("user") @Valid Student student, BindingResult result, Model model) {
         if (userService.findUserByPhone(student.getPhone()).isPresent() &&
                 !userService.findUserByPhone(student.getPhone()).get().getId().equals(id)) {
             result.rejectValue("phone", "", userValidationService.validatePhoneNumber(student.getPhone()));

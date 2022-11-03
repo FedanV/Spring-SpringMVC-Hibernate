@@ -1,13 +1,13 @@
 package com.foxminded.vitaliifedan.task10.dao;
 
-import com.foxminded.vitaliifedan.task10.models.persons.StudentGroup;
+import com.foxminded.vitaliifedan.task10.models.persons.Student;
 
 public interface StudentGroupDao {
 
-    StudentGroup addGroupToStudent(int userId, int groupId);
+    Student addGroupToStudent(int userId, int groupId);
 
     Boolean removeStudentFromGroup(int userId);
 
-    StudentGroup updateGroupForStudentId(int userId, int groupId);
+    Student updateGroupForStudentId(int userId, int groupId);
 
 }

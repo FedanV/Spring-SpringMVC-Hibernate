@@ -1,15 +1,12 @@
 package com.foxminded.vitaliifedan.task10.models.persons;
 
 import com.foxminded.vitaliifedan.task10.models.BaseEntity;
-import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -17,8 +14,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Builder
+@SuperBuilder
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("USER")
 public class User implements BaseEntity<Integer> {
 
     @Id
@@ -48,32 +48,7 @@ public class User implements BaseEntity<Integer> {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Enumerated(EnumType.STRING)
-    private UserType userType;
+    @Column(name = "user_type", insertable = false, updatable = false)
+    protected String userType;
 
-    @OneToOne(mappedBy = "user")
-    private StudentGroup studentGroup;
-
-    @OneToMany(mappedBy = "user")
-    @ToString.Exclude
-    @Builder.Default
-    private List<TeacherCourse> teacherCourses = new ArrayList<>();
-
-    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
-    @ToString.Exclude
-    @Builder.Default
-    private List<Lecture> lectures = new ArrayList<>();
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(phone, user.phone) && Objects.equals(login, user.login) && Objects.equals(password, user.password) && role == user.role && userType == user.userType;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, surname, phone, login, password, role, userType);
-    }
 }

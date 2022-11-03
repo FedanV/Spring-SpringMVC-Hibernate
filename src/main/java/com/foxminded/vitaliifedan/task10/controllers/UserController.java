@@ -58,7 +58,6 @@ public class UserController {
             model.addAttribute("roles", Role.values());
             return "university/users/addUser";
         }
-        user.setUserType(UserType.USER);
         try {
             userService.create(user);
         } catch (UserException e) {
@@ -147,7 +146,6 @@ public class UserController {
                 .login(user.getLogin())
                 .password(passwordEncoder.encode(user.getPassword()))
                 .role(Role.NONE)
-                .userType(UserType.USER)
                 .build();
         try {
             userService.create(registeredUser);

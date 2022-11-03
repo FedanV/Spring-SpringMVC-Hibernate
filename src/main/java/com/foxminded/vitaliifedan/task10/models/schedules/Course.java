@@ -1,16 +1,14 @@
 package com.foxminded.vitaliifedan.task10.models.schedules;
 
 import com.foxminded.vitaliifedan.task10.models.BaseEntity;
-import com.foxminded.vitaliifedan.task10.models.persons.TeacherCourse;
+import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -37,20 +35,8 @@ public class Course implements BaseEntity<Integer> {
     @Builder.Default
     private List<Lecture> lectures = new ArrayList<>();
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Course course = (Course) o;
-        return id != null && Objects.equals(id, course.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
     @OneToMany(mappedBy = "course")
     @ToString.Exclude
-    private List<TeacherCourse> teacherCourses = new ArrayList<>();
+    private List<Teacher> teachers = new ArrayList<>();
+
 }

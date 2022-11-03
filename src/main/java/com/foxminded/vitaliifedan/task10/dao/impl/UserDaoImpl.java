@@ -63,7 +63,7 @@ public class UserDaoImpl extends AbstractCrudDao<User, Integer> implements UserD
     @Override
     public List<User> getUsersByUserType(UserType userType) {
         return entityManager.createQuery("SELECT u FROM User u WHERE u.userType=:userType", User.class)
-                .setParameter("userType", userType)
+                .setParameter("userType", userType.toString())
                 .getResultList();
     }
 

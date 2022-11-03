@@ -2,6 +2,7 @@ package com.foxminded.vitaliifedan.task10.controllers;
 
 import com.foxminded.vitaliifedan.task10.exceptions.UserException;
 import com.foxminded.vitaliifedan.task10.models.persons.Role;
+import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.services.UserService;
@@ -37,13 +38,13 @@ public class TeacherController {
     }
 
     @GetMapping("/add")
-    public String addTeacher(@ModelAttribute("user") User teacher, Model model) {
+    public String addTeacher(@ModelAttribute("user") Teacher teacher, Model model) {
         model.addAttribute("roles", Role.values());
         return "university/teachers/addTeacher";
     }
 
     @PostMapping("/add")
-    public String saveTeacher(@ModelAttribute("user") @Valid User teacher, BindingResult result, Model model) {
+    public String saveTeacher(@ModelAttribute("user") @Valid Teacher teacher, BindingResult result, Model model) {
         String err = userValidationService.validatePhoneNumber(teacher.getPhone());
         if (!err.isEmpty()) {
             result.rejectValue("phone", "", err);
@@ -52,7 +53,6 @@ public class TeacherController {
             model.addAttribute("roles", Role.values());
             return "university/teachers/addTeacher";
         }
-        teacher.setUserType(UserType.TEACHER);
         try {
             userService.create(teacher);
         } catch (UserException e) {
@@ -75,7 +75,7 @@ public class TeacherController {
     }
 
     @PostMapping("/{id}")
-    public String updateTeacher(@PathVariable("id") Integer id, @ModelAttribute("user") @Valid User teacher, BindingResult result, Model model) {
+    public String updateTeacher(@PathVariable("id") Integer id, @ModelAttribute("user") @Valid Teacher teacher, BindingResult result, Model model) {
         if (userService.findUserByPhone(teacher.getPhone()).isPresent() &&
                 !userService.findUserByPhone(teacher.getPhone()).get().getId().equals(id)) {
             result.rejectValue("phone", "", userValidationService.validatePhoneNumber(teacher.getPhone()));

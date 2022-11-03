@@ -1,7 +1,7 @@
 package com.foxminded.vitaliifedan.task10.services;
 
-import com.foxminded.vitaliifedan.task10.models.persons.StudentGroup;
-import com.foxminded.vitaliifedan.task10.models.persons.TeacherCourse;
+import com.foxminded.vitaliifedan.task10.models.persons.Student;
+import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 
@@ -21,17 +21,17 @@ public interface UserService {
 
     Boolean deletedById(Integer id);
 
-    StudentGroup addGroupToStudent(Integer userId, Integer groupId);
+    Student addGroupToStudent(Integer userId, Integer groupId);
 
     Boolean removeStudentFromGroup(Integer userId);
 
-    StudentGroup updateGroupForStudent(Integer userId, Integer groupId);
+    Student updateGroupForStudent(Integer userId, Integer groupId);
 
-    TeacherCourse addCourseToTeacher(Integer teacherId, Integer courseId);
+    Teacher addCourseToTeacher(Integer teacherId, Integer courseId);
 
     Boolean removeCourseFromTeacher(Integer teacherId, Integer courseId);
 
-    TeacherCourse updateCourseForTeacher(Integer teacherId, Integer newCourseId, Integer oldCourseId);
+    Teacher updateCourseForTeacher(Integer teacherId, Integer newCourseId, Integer oldCourseId);
 
     Optional<User> findUserByPhone(String phone);
 

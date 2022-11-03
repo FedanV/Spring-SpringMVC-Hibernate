@@ -2,7 +2,7 @@ package com.foxminded.vitaliifedan.task10.controllers;
 
 import com.foxminded.vitaliifedan.task10.dto.LectureDTO;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
-import com.foxminded.vitaliifedan.task10.models.persons.User;
+import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
@@ -66,7 +66,7 @@ public class LectureController {
     public String saveLecture(@ModelAttribute LectureDTO lectureDTO) {
         Lecture lecture = Lecture.builder()
                 .course(Course.builder().id(lectureDTO.getCourseId()).build())
-                .teacher(User.builder().id(lectureDTO.getTeacherId()).build())
+                .teacher(Teacher.builder().id(lectureDTO.getTeacherId()).build())
                 .group(Group.builder().id(lectureDTO.getGroupId()).build())
                 .audience(Audience.builder().id(lectureDTO.getAudienceId()).build())
                 .lectureDate(LocalDate.parse(lectureDTO.getDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")))
@@ -111,7 +111,7 @@ public class LectureController {
         Lecture lecture = Lecture.builder()
                 .id(id)
                 .course(Course.builder().id(lectureDTO.getCourseId()).build())
-                .teacher(User.builder().id(lectureDTO.getTeacherId()).build())
+                .teacher(Teacher.builder().id(lectureDTO.getTeacherId()).build())
                 .group(Group.builder().id(lectureDTO.getGroupId()).build())
                 .audience(Audience.builder().id(lectureDTO.getAudienceId()).build())
                 .lectureDate(LocalDate.parse(lectureDTO.getDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")))

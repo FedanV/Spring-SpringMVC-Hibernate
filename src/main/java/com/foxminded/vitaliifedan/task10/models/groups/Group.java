@@ -1,7 +1,7 @@
 package com.foxminded.vitaliifedan.task10.models.groups;
 
 import com.foxminded.vitaliifedan.task10.models.BaseEntity;
-import com.foxminded.vitaliifedan.task10.models.persons.StudentGroup;
+import com.foxminded.vitaliifedan.task10.models.persons.Student;
 import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -35,7 +35,7 @@ public class Group implements BaseEntity<Integer> {
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     @ToString.Exclude
     @Builder.Default
-    private List<StudentGroup> students = new ArrayList<>();
+    private List<Student> students = new ArrayList<>();
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     @ToString.Exclude

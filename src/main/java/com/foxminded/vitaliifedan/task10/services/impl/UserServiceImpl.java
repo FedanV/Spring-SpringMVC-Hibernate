@@ -4,8 +4,8 @@ import com.foxminded.vitaliifedan.task10.dao.StudentGroupDao;
 import com.foxminded.vitaliifedan.task10.dao.TeacherCourseDao;
 import com.foxminded.vitaliifedan.task10.dao.UserDao;
 import com.foxminded.vitaliifedan.task10.exceptions.UserException;
-import com.foxminded.vitaliifedan.task10.models.persons.StudentGroup;
-import com.foxminded.vitaliifedan.task10.models.persons.TeacherCourse;
+import com.foxminded.vitaliifedan.task10.models.persons.Student;
+import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
 import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.services.UserService;
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Transactional
-    public StudentGroup addGroupToStudent(Integer userId, Integer groupId) {
+    public Student addGroupToStudent(Integer userId, Integer groupId) {
         try {
             return studentGroupDao.addGroupToStudent(userId, groupId);
         } catch (UserException e) {
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Transactional
-    public StudentGroup updateGroupForStudent(Integer userId, Integer groupId) {
+    public Student updateGroupForStudent(Integer userId, Integer groupId) {
         try {
             return studentGroupDao.updateGroupForStudentId(userId, groupId);
         } catch (UserException e) {
@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Transactional
-    public TeacherCourse addCourseToTeacher(Integer teacherId, Integer courseId) {
+    public Teacher addCourseToTeacher(Integer teacherId, Integer courseId) {
         try {
             return teacherCourseDao.addCourseToTeacher(teacherId, courseId);
         } catch (UserException e) {
@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Transactional
-    public TeacherCourse updateCourseForTeacher(Integer teacherId, Integer newCourseId, Integer oldCourseId) {
+    public Teacher updateCourseForTeacher(Integer teacherId, Integer newCourseId, Integer oldCourseId) {
         try {
             return teacherCourseDao.updateCourseForTeacherId(teacherId, newCourseId, oldCourseId);
         } catch (UserException e) {

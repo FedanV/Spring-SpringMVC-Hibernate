@@ -2,7 +2,7 @@ package com.foxminded.vitaliifedan.task10.models.schedules;
 
 import com.foxminded.vitaliifedan.task10.models.BaseEntity;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
-import com.foxminded.vitaliifedan.task10.models.persons.User;
+import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -39,7 +39,7 @@ public class Lecture implements BaseEntity<Integer> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     @ToString.Exclude
-    private User teacher;
+    private Teacher teacher;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", referencedColumnName = "id")
@@ -61,7 +61,7 @@ public class Lecture implements BaseEntity<Integer> {
         this.group.getLectures().add(this);
     }
 
-    public void setTeacher(User teacher) {
+    public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
         this.teacher.getLectures().add(this);
     }
