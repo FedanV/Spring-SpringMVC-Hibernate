@@ -1,21 +1,21 @@
 package com.foxminded.vitaliifedan.task10.services.validators;
 
-import com.foxminded.vitaliifedan.task10.dao.GroupDao;
+import com.foxminded.vitaliifedan.task10.services.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GroupValidationService {
 
-    private final GroupDao groupDao;
+    private final GroupService groupService;
     @Autowired
-    public GroupValidationService(GroupDao groupDao) {
-        this.groupDao = groupDao;
+    public GroupValidationService(GroupService groupService) {
+        this.groupService = groupService;
     }
 
     public String validateGroupName(String name) {
         String message = "";
-        if(groupDao.findGroupByGroupName(name).isPresent()) {
+        if(groupService.findGroupByName(name).isPresent()) {
             message = String.format("Group %s exists", name);
         }
         return message;

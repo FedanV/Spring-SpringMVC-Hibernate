@@ -1,8 +1,7 @@
 package com.foxminded.vitaliifedan.task10.services.impl;
 
-import com.foxminded.vitaliifedan.task10.dao.GroupDao;
-import com.foxminded.vitaliifedan.task10.exceptions.GroupException;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
+import com.foxminded.vitaliifedan.task10.repositories.GroupRepository;
 import com.foxminded.vitaliifedan.task10.services.GroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,55 +17,42 @@ import java.util.Optional;
 public class GroupServiceImpl implements GroupService {
     private static final Logger logger = LoggerFactory.getLogger(GroupServiceImpl.class);
 
-    private final GroupDao groupDao;
+    private final GroupRepository groupRepository;
 
     @Autowired
-    public GroupServiceImpl(GroupDao groupDao) {
-        this.groupDao = groupDao;
+    public GroupServiceImpl(GroupRepository groupRepository) {
+        this.groupRepository = groupRepository;
     }
 
     @Transactional(readOnly = true)
     public List<Group> findAll() {
-        return groupDao.getAll();
+        return groupRepository.findAll();
     }
 
     @Transactional(readOnly = true)
     public Optional<Group> findById(Integer id) {
-        return groupDao.getById(id);
+        return groupRepository.findById(id);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Group create(Group group) {
-        try {
-            return groupDao.save(group);
-        } catch (GroupException e) {
-            logger.error("Exception happened when Group is creating", e);
-            throw e;
-        }
+        return groupRepository.save(group);
     }
 
     @Transactional
     public Group update(Group group) {
-        try {
-            return groupDao.save(group);
-        } catch (GroupException e) {
-            logger.error("Exception happened when Group is updating", e);
-            throw e;
-        }
+        return groupRepository.save(group);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public Boolean deleteById(Integer id) {
-        try {
-            return groupDao.delete(id);
-        } catch (GroupException e) {
-            logger.error("Exception happened when Group is deleting", e);
-            throw e;
-        }
+    public void deleteById(Integer id) {
+        groupRepository.deleteById(id);
     }
 
     @Override
     public Optional<Group> findGroupByName(String name) {
-        return groupDao.findGroupByGroupName(name);
+        return groupRepository.findGroupByGroupName(name);
     }
 }

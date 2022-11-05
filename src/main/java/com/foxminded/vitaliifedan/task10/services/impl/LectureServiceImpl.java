@@ -1,10 +1,9 @@
 package com.foxminded.vitaliifedan.task10.services.impl;
 
-import com.foxminded.vitaliifedan.task10.dao.LectureDao;
-import com.foxminded.vitaliifedan.task10.exceptions.LectureException;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
 import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
+import com.foxminded.vitaliifedan.task10.repositories.LectureRepository;
 import com.foxminded.vitaliifedan.task10.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +22,15 @@ public class LectureServiceImpl implements LectureService {
 
     private static final Logger logger = LoggerFactory.getLogger(LectureServiceImpl.class);
 
-    private final LectureDao lectureDao;
+    private final LectureRepository lectureRepository;
     private final AudienceService audienceService;
     private final CourseService courseService;
     private final GroupService groupService;
     private final UserService userService;
 
     @Autowired
-    public LectureServiceImpl(LectureDao lectureDao, AudienceService audienceService, CourseService courseService, GroupService groupService, UserService userService) {
-        this.lectureDao = lectureDao;
+    public LectureServiceImpl(LectureRepository lectureRepository, AudienceService audienceService, CourseService courseService, GroupService groupService, UserService userService) {
+        this.lectureRepository = lectureRepository;
         this.audienceService = audienceService;
         this.courseService = courseService;
         this.groupService = groupService;
@@ -40,49 +39,34 @@ public class LectureServiceImpl implements LectureService {
 
     @Transactional(readOnly = true)
     public List<Lecture> findAll() {
-        return lectureDao.getAll();
+        return lectureRepository.findAll();
     }
 
     @Transactional(readOnly = true)
     public Optional<Lecture> findById(Integer id) {
-        return lectureDao.getById(id);
+        return lectureRepository.findById(id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Lecture create(Lecture lecture) {
-        try {
-            return lectureDao.save(lecture);
-        } catch (LectureException e) {
-            logger.error("Exception happened when Lecture is creating", e);
-            throw e;
-        }
+        return lectureRepository.save(lecture);
     }
 
     @Transactional
     public Lecture update(Lecture lecture) {
-        try {
-            return lectureDao.save(lecture);
-        } catch (LectureException e) {
-            logger.error("Exception happened when Lecture is updating", e);
-            throw e;
-        }
+        return lectureRepository.save(lecture);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public Boolean deletedById(Integer id) {
-        try {
-            return lectureDao.delete(id);
-        } catch (LectureException e) {
-            logger.error("Exception happened when Lecture is deleting", e);
-            throw e;
-        }
+    public void deletedById(Integer id) {
+        lectureRepository.deleteById(id);
     }
 
     @Transactional
     public Map<String, String> getFilledLecture(Integer id) {
-        Optional<Lecture> lecture = lectureDao.getById(id);
+        Optional<Lecture> lecture = lectureRepository.findById(id);
         Map<String, String> filledLecture = new HashMap<>();
         if (lecture.isPresent()) {
             if (lecture.get().getCourse() != null) {
@@ -95,13 +79,13 @@ public class LectureServiceImpl implements LectureService {
                         .map(teacher -> teacher.getName() + " " + teacher.getSurname()).orElse(null);
                 filledLecture.put("teacher", teacherName);
             }
-            if(lecture.get().getGroup() != null) {
+            if (lecture.get().getGroup() != null) {
                 String groupName = groupService.findById(lecture.get().getGroup().getId())
                         .map(Group::getGroupName).orElse(null);
                 filledLecture.put("group", groupName);
             }
 
-            if(lecture.get().getAudience() != null) {
+            if (lecture.get().getAudience() != null) {
                 String audience = audienceService.findById(lecture.get().getAudience().getId())
                         .map(a -> String.valueOf(a.getRoomNumber())).orElse(null);
                 filledLecture.put("audience", audience);

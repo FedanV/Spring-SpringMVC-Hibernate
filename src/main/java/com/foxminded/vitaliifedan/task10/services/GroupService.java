@@ -14,6 +14,6 @@ public interface GroupService {
 
     Group update(Group group);
 
-    Boolean deleteById(Integer id);
+    void deleteById(Integer id);
     Optional<Group> findGroupByName(String name);
 }

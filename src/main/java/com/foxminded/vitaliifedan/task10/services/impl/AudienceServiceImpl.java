@@ -1,8 +1,7 @@
 package com.foxminded.vitaliifedan.task10.services.impl;
 
-import com.foxminded.vitaliifedan.task10.dao.AudienceDao;
-import com.foxminded.vitaliifedan.task10.exceptions.AudienceException;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
+import com.foxminded.vitaliifedan.task10.repositories.AudienceRepository;
 import com.foxminded.vitaliifedan.task10.services.AudienceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,55 +18,44 @@ public class AudienceServiceImpl implements AudienceService {
 
     private static final Logger logger = LoggerFactory.getLogger(AudienceServiceImpl.class);
 
-    private final AudienceDao audienceDao;
+    private final AudienceRepository audienceRepository;
 
     @Autowired
-    public AudienceServiceImpl(AudienceDao audienceDao) {
-        this.audienceDao = audienceDao;
+    public AudienceServiceImpl(AudienceRepository audienceRepository) {
+        this.audienceRepository = audienceRepository;
     }
 
     @Transactional(readOnly = true)
     public List<Audience> findAll() {
-        return audienceDao.getAll();
+        return audienceRepository.findAll();
     }
 
     @Transactional(readOnly = true)
     public Optional<Audience> findById(Integer id) {
-        return audienceDao.getById(id);
+        return audienceRepository.findById(id);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Audience create(Audience audience) {
-        try {
-            return audienceDao.save(audience);
-        } catch (AudienceException e) {
-            logger.error("Exception happened when Audience is creating", e);
-            throw e;
-        }
+        return audienceRepository.save(audience);
     }
 
     @Transactional
     public Audience update(Audience audience) {
-        try {
-            return audienceDao.save(audience);
-        } catch (AudienceException e) {
-            logger.error("Exception happened when Audience is updating ", e);
-            throw e;
-        }
+        return audienceRepository.save(audience);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public Boolean deletedById(Integer id) {
-        try {
-            return audienceDao.delete(id);
-        } catch (AudienceException e) {
-            logger.error("Exception happened when Audience is deleting", e);
-            throw e;
-        }
+    public void deletedById(Integer id) {
+        audienceRepository.deleteById(id);
+
     }
 
     @Override
     public Optional<Audience> findAudienceByNumber(Integer number) {
-        return audienceDao.findAudienceByRoomNumber(number);
+        return audienceRepository.findAudienceByRoomNumber(number);
     }
+
 }

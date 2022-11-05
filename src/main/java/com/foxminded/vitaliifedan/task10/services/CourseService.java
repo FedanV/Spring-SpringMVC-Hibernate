@@ -14,6 +14,6 @@ public interface CourseService {
 
     Course update(Course course);
 
-    Boolean deleteById(Integer id);
+    void deleteById(Integer id);
     Optional<Course> findCourseByName(String name);
 }

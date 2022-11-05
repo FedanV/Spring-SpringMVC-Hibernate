@@ -1,22 +1,22 @@
 package com.foxminded.vitaliifedan.task10.services.validators;
 
-import com.foxminded.vitaliifedan.task10.dao.CourseDao;
+import com.foxminded.vitaliifedan.task10.services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CourseValidationService {
 
-    private final CourseDao courseDao;
+    private final CourseService courseService;
 
     @Autowired
-    public CourseValidationService(CourseDao courseDao) {
-        this.courseDao = courseDao;
+    public CourseValidationService(CourseService courseService) {
+        this.courseService = courseService;
     }
 
     public String validateCourseName(String name) {
         String message = "";
-        if(courseDao.findByCourseName(name).isPresent()) {
+        if(courseService.findCourseByName(name).isPresent()) {
             message = String.format("Course with name %s exists", name);
         }
         return message;

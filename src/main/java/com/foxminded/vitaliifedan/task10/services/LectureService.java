@@ -11,7 +11,7 @@ public interface LectureService {
     Optional<Lecture> findById(Integer id);
     Lecture create(Lecture lecture);
     Lecture update(Lecture lecture);
-    Boolean deletedById(Integer id);
+    void deletedById(Integer id);
 
     Map<String, String> getFilledLecture(Integer id);
 }

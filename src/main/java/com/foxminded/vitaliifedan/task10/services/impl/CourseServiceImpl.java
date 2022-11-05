@@ -1,8 +1,7 @@
 package com.foxminded.vitaliifedan.task10.services.impl;
 
-import com.foxminded.vitaliifedan.task10.dao.CourseDao;
-import com.foxminded.vitaliifedan.task10.exceptions.CourseException;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
+import com.foxminded.vitaliifedan.task10.repositories.CourseRepository;
 import com.foxminded.vitaliifedan.task10.services.CourseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,55 +18,43 @@ public class CourseServiceImpl implements CourseService {
 
     private static final Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
 
-    private final CourseDao courseDao;
+    private final CourseRepository courseRepository;
 
     @Autowired
-    public CourseServiceImpl(CourseDao courseDao) {
-        this.courseDao = courseDao;
+    public CourseServiceImpl(CourseRepository courseRepository) {
+        this.courseRepository = courseRepository;
     }
 
     @Transactional(readOnly = true)
     public List<Course> findAll() {
-        return courseDao.getAll();
+        return courseRepository.findAll();
     }
 
     @Transactional(readOnly = true)
     public Optional<Course> findById(Integer id) {
-        return courseDao.getById(id);
+        return courseRepository.findById(id);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Course create(Course course) {
-        try {
-            return courseDao.save(course);
-        } catch (CourseException e) {
-            logger.error("Exception happened when Course is creating", e);
-            throw e;
-        }
+        return courseRepository.save(course);
     }
 
     @Transactional
     public Course update(Course course) {
-        try {
-            return courseDao.save(course);
-        } catch (CourseException e) {
-            logger.error("Exception happened when Course is updating", e);
-            throw e;
-        }
+        return courseRepository.save(course);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public Boolean deleteById(Integer id) {
-        try {
-            return courseDao.delete(id);
-        } catch (CourseException e) {
-            logger.error("Exception happened when Course is deleting", e);
-            throw e;
-        }
+    public void deleteById(Integer id) {
+        courseRepository.deleteById(id);
+
     }
 
     @Override
     public Optional<Course> findCourseByName(String name) {
-        return courseDao.findByCourseName(name);
+        return courseRepository.findCourseByCourseName(name);
     }
 }
