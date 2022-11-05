@@ -3,8 +3,7 @@ package com.foxminded.vitaliifedan.task10.controllers;
 import com.foxminded.vitaliifedan.task10.exceptions.UserException;
 import com.foxminded.vitaliifedan.task10.models.persons.Role;
 import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
-import com.foxminded.vitaliifedan.task10.models.persons.User;
-import com.foxminded.vitaliifedan.task10.models.persons.UserType;
+import com.foxminded.vitaliifedan.task10.services.TeacherService;
 import com.foxminded.vitaliifedan.task10.services.UserService;
 import com.foxminded.vitaliifedan.task10.services.validators.UserValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +20,20 @@ import java.util.Optional;
 @RequestMapping("/teachers")
 public class TeacherController {
 
+    private final TeacherService teacherService;
     private final UserService userService;
     private final UserValidationService userValidationService;
 
     @Autowired
-    public TeacherController(UserService userService, UserValidationService userValidationService) {
+    public TeacherController(TeacherService teacherService, UserService userService, UserValidationService userValidationService) {
+        this.teacherService = teacherService;
         this.userService = userService;
         this.userValidationService = userValidationService;
     }
 
     @GetMapping()
     public String getTeachers(Model model) {
-        List<User> teachers = userService.getUserByUserType(UserType.TEACHER);
+        List<Teacher> teachers = teacherService.findAll();
         model.addAttribute("teachers", teachers);
         return "university/teachers/allTeachers";
     }
@@ -54,8 +55,8 @@ public class TeacherController {
             return "university/teachers/addTeacher";
         }
         try {
-            userService.create(teacher);
-        } catch (UserException e) {
+            teacherService.create(teacher);
+        } catch (Exception e) {
             return "university/error";
         }
         return "redirect:/teachers";
@@ -63,13 +64,13 @@ public class TeacherController {
 
     @GetMapping("/{id}")
     public String showTeacher(@PathVariable("id") Integer id, Model model) {
-        userService.findById(id).ifPresent(entity -> model.addAttribute("user", entity));
+        teacherService.findById(id).ifPresent(entity -> model.addAttribute("user", entity));
         return "university/teachers/showTeacher";
     }
 
     @GetMapping("/{id}/edit")
     public String editTeacher(@PathVariable("id") Integer id, Model model) {
-        userService.findById(id).ifPresent(entity -> model.addAttribute("user", entity));
+        teacherService.findById(id).ifPresent(entity -> model.addAttribute("user", entity));
         model.addAttribute("roles", Role.values());
         return "university/teachers/editTeacher";
     }
@@ -84,7 +85,7 @@ public class TeacherController {
             model.addAttribute("roles", Role.values());
             return "university/teachers/editTeacher";
         }
-        Optional<User> updateUser = userService.findById(id);
+        Optional<Teacher> updateUser = teacherService.findById(id);
         if (updateUser.isPresent()) {
             updateUser.get().setName(teacher.getName());
             updateUser.get().setSurname(teacher.getSurname());
@@ -99,8 +100,8 @@ public class TeacherController {
                 updateUser.get().setRole(teacher.getRole());
             }
             try {
-                userService.update(updateUser.get());
-            } catch (UserException e) {
+                teacherService.update(updateUser.get());
+            } catch (Exception e) {
                 return "university/error";
             }
         }
@@ -110,7 +111,7 @@ public class TeacherController {
     @DeleteMapping("/{id}")
     public String deleteTeacher(@PathVariable("id") Integer id) {
         try {
-            userService.deletedById(id);
+            teacherService.deletedById(id);
         } catch (UserException e) {
             return "university/error";
         }

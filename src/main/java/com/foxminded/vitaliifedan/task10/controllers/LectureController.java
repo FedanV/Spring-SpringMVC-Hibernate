@@ -3,7 +3,6 @@ package com.foxminded.vitaliifedan.task10.controllers;
 import com.foxminded.vitaliifedan.task10.dto.LectureDTO;
 import com.foxminded.vitaliifedan.task10.models.groups.Group;
 import com.foxminded.vitaliifedan.task10.models.persons.Teacher;
-import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.models.schedules.Audience;
 import com.foxminded.vitaliifedan.task10.models.schedules.Course;
 import com.foxminded.vitaliifedan.task10.models.schedules.Lecture;
@@ -26,15 +25,15 @@ public class LectureController {
 
     private final LectureService lectureService;
     private final CourseService courseService;
-    private final UserService userService;
+    private final TeacherService teacherService;
     private final GroupService groupService;
     private final AudienceService audienceService;
 
     @Autowired
-    public LectureController(LectureService lectureService, CourseService courseService, UserService userService, GroupService groupService, AudienceService audienceService) {
+    public LectureController(LectureService lectureService, CourseService courseService, TeacherService teacherService, GroupService groupService, AudienceService audienceService) {
         this.lectureService = lectureService;
         this.courseService = courseService;
-        this.userService = userService;
+        this.teacherService = teacherService;
         this.groupService = groupService;
         this.audienceService = audienceService;
     }
@@ -56,7 +55,7 @@ public class LectureController {
     @GetMapping("/add")
     public String addLecture(@ModelAttribute("lecture") LectureDTO lecture, Model model) {
         model.addAttribute("courses", courseService.findAll());
-        model.addAttribute("teachers", userService.getUserByUserType(UserType.TEACHER));
+        model.addAttribute("teachers", teacherService.findAll());
         model.addAttribute("groups", groupService.findAll());
         model.addAttribute("audiences", audienceService.findAll());
         return "university/lectures/addLecture";
@@ -100,7 +99,7 @@ public class LectureController {
             model.addAttribute("lecture", new LectureDTO());
         }
         model.addAttribute("courses", courseService.findAll());
-        model.addAttribute("teachers", userService.getUserByUserType(UserType.TEACHER));
+        model.addAttribute("teachers", teacherService.findAll());
         model.addAttribute("groups", groupService.findAll());
         model.addAttribute("audiences", audienceService.findAll());
         return "university/lectures/editLecture";

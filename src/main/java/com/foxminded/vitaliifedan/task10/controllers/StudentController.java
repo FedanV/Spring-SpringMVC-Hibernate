@@ -1,10 +1,8 @@
 package com.foxminded.vitaliifedan.task10.controllers;
 
-import com.foxminded.vitaliifedan.task10.exceptions.UserException;
 import com.foxminded.vitaliifedan.task10.models.persons.Role;
 import com.foxminded.vitaliifedan.task10.models.persons.Student;
-import com.foxminded.vitaliifedan.task10.models.persons.User;
-import com.foxminded.vitaliifedan.task10.models.persons.UserType;
+import com.foxminded.vitaliifedan.task10.services.StudentService;
 import com.foxminded.vitaliifedan.task10.services.UserService;
 import com.foxminded.vitaliifedan.task10.services.validators.UserValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +20,19 @@ import java.util.Optional;
 public class StudentController {
 
     private final UserService userService;
+    private final StudentService studentService;
     private final UserValidationService userValidationService;
 
     @Autowired
-    public StudentController(UserService userService, UserValidationService userValidationService) {
+    public StudentController(UserService userService, StudentService studentService, UserValidationService userValidationService) {
         this.userService = userService;
+        this.studentService = studentService;
         this.userValidationService = userValidationService;
     }
 
     @GetMapping()
     public String getStudents(Model model) {
-        List<User> students = userService.getUserByUserType(UserType.STUDENT);
+        List<Student> students = studentService.findAll();
         model.addAttribute("students", students);
         return "university/students/allStudents";
     }
@@ -56,7 +56,7 @@ public class StudentController {
         }
         try {
             userService.create(student);
-        } catch (UserException e) {
+        } catch (Exception e) {
             return "university/error";
         }
         return "redirect:/students";
@@ -64,13 +64,13 @@ public class StudentController {
 
     @GetMapping("/{id}")
     public String showStudent(@PathVariable("id") Integer id, Model model) {
-        userService.findById(id).ifPresent(entity -> model.addAttribute("user", entity));
+        studentService.findById(id).ifPresent(entity -> model.addAttribute("user", entity));
         return "university/students/showStudent";
     }
 
     @GetMapping("/{id}/edit")
     public String editStudent(@PathVariable("id") Integer id, Model model) {
-        userService.findById(id).ifPresent(entity -> model.addAttribute("user", entity));
+        studentService.findById(id).ifPresent(entity -> model.addAttribute("user", entity));
         model.addAttribute("roles", Role.values());
         return "university/students/editStudent";
     }
@@ -84,7 +84,7 @@ public class StudentController {
         if (result.hasErrors()) {
             return "university/students/editStudent";
         }
-        Optional<User> updateUser = userService.findById(id);
+        Optional<Student> updateUser = studentService.findById(id);
         if (updateUser.isPresent()) {
             updateUser.get().setName(student.getName());
             updateUser.get().setSurname(student.getSurname());
@@ -99,8 +99,8 @@ public class StudentController {
                 updateUser.get().setRole(student.getRole());
             }
             try {
-                userService.update(updateUser.get());
-            } catch (UserException e) {
+                studentService.update(updateUser.get());
+            } catch (Exception e) {
                 return "university/error";
             }
         }
@@ -110,8 +110,8 @@ public class StudentController {
     @DeleteMapping("/{id}")
     public String deleteStudent(@PathVariable("id") Integer id) {
         try {
-            userService.deletedById(id);
-        } catch (UserException e) {
+            studentService.deletedById(id);
+        } catch (Exception e) {
             return "university/error";
         }
         return "redirect:/students";

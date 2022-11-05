@@ -4,7 +4,6 @@ import com.foxminded.vitaliifedan.task10.dto.UserRegistrationDTO;
 import com.foxminded.vitaliifedan.task10.exceptions.UserException;
 import com.foxminded.vitaliifedan.task10.models.persons.Role;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
-import com.foxminded.vitaliifedan.task10.models.persons.UserType;
 import com.foxminded.vitaliifedan.task10.services.UserService;
 import com.foxminded.vitaliifedan.task10.services.validators.UserValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,7 @@ public class UserController {
 
     @GetMapping()
     public String getUsers(Model model) {
-        List<User> users = userService.getUserByUserType(UserType.USER);
+        List<User> users = userService.findAll();
         model.addAttribute("users", users);
         return "university/users/allUsers";
     }
