@@ -28,6 +28,8 @@ class LectureControllerTest {
     @MockBean
     private LectureService lectureService;
     @MockBean
+    private TeacherService teacherService;
+    @MockBean
     private GroupService groupService;
     @MockBean
     private UserService userService;

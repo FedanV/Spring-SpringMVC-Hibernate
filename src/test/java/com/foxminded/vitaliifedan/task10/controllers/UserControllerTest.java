@@ -42,7 +42,7 @@ class UserControllerTest {
                 .password("pass")
                 .role(Role.NONE)
                 .build();
-        doReturn(List.of(user)).when(userService).getUserByUserType(UserType.USER);
+        doReturn(List.of(user)).when(userService).findAll();
         mockMvc.perform(MockMvcRequestBuilders.get("/users"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andExpect(MockMvcResultMatchers.view().name("university/users/allUsers"))

@@ -4,7 +4,7 @@ import com.foxminded.vitaliifedan.task10.exceptions.UserException;
 import com.foxminded.vitaliifedan.task10.models.persons.Role;
 import com.foxminded.vitaliifedan.task10.models.persons.Student;
 import com.foxminded.vitaliifedan.task10.models.persons.User;
-import com.foxminded.vitaliifedan.task10.models.persons.UserType;
+import com.foxminded.vitaliifedan.task10.services.StudentService;
 import com.foxminded.vitaliifedan.task10.services.UserService;
 import com.foxminded.vitaliifedan.task10.services.validators.UserValidationService;
 import org.junit.jupiter.api.Test;
@@ -27,6 +27,9 @@ import static org.mockito.Mockito.doReturn;
 class StudentControllerTest {
 
     @MockBean
+    private StudentService studentService;
+
+    @MockBean
     private UserService userService;
     @MockBean
     private UserValidationService userValidationService;
@@ -35,15 +38,15 @@ class StudentControllerTest {
 
     @Test
     void getStudents() throws Exception {
-        User student = User.builder()
+        Student student = Student.builder()
                 .name("name")
                 .surname("surname")
-                .phone("phone")
+                .phone("phone1")
                 .login("login")
                 .password("pass")
                 .role(Role.ROLE_STUDENT)
                 .build();
-        doReturn(List.of(student)).when(userService).getUserByUserType(UserType.STUDENT);
+        doReturn(List.of(student)).when(studentService).findAll();
         mockMvc.perform(MockMvcRequestBuilders.get("/students"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andExpect(MockMvcResultMatchers.view().name("university/students/allStudents"))
@@ -82,7 +85,7 @@ class StudentControllerTest {
 
     @Test
     void editStudent() throws Exception {
-        Mockito.doReturn(Optional.of(new User())).when(userService).findById(Mockito.anyInt());
+        Mockito.doReturn(Optional.of(new Student())).when(studentService).findById(Mockito.anyInt());
         mockMvc.perform(MockMvcRequestBuilders.get("/students/1/edit"))
                 .andExpectAll(
                         MockMvcResultMatchers.status().is2xxSuccessful(),
@@ -115,35 +118,9 @@ class StudentControllerTest {
                 );
     }
 
-
-    @Test
-    void checkUserExceptionWhenCreateStudent() throws Exception {
-        User student = User.builder()
-                .name("name")
-                .surname("surname")
-                .phone("phone")
-                .login("login")
-                .password("pass")
-                .role(Role.ROLE_STUDENT)
-                .build();
-        Mockito.doThrow(UserException.class).when(userService).create(Mockito.any(User.class));
-        Mockito.doReturn("").when(userValidationService).validatePhoneNumber(Mockito.anyString());
-        mockMvc.perform(MockMvcRequestBuilders.post("/students/add")
-                        .param("name", "name")
-                        .param("surname", "surname")
-                        .param("phone", "phone1")
-                        .param("login", "login")
-                        .param("password", "password")
-                        .param("role", Role.NONE.toString()))
-                .andExpectAll(
-                        MockMvcResultMatchers.status().is2xxSuccessful(),
-                        MockMvcResultMatchers.view().name("university/error")
-                );
-    }
-
     @Test
     void checkUserExceptionWhenUpdateStudent() throws Exception {
-        User student = User.builder()
+        Student student = Student.builder()
                 .id(1)
                 .name("name")
                 .surname("surname")
@@ -152,9 +129,9 @@ class StudentControllerTest {
                 .password("pass")
                 .role(Role.ROLE_STUDENT)
                 .build();
-        Mockito.doThrow(UserException.class).when(userService).update(student);
+        Mockito.doThrow(UserException.class).when(studentService).update(student);
         Mockito.doReturn("").when(userValidationService).validatePhoneNumber(Mockito.anyString());
-        Mockito.doReturn(Optional.of(student)).when(userService).findById(Mockito.anyInt());
+        Mockito.doReturn(Optional.of(student)).when(studentService).findById(Mockito.anyInt());
         mockMvc.perform(MockMvcRequestBuilders.post("/students/1")
                         .param("id", "1")
                         .param("name", "name")
@@ -171,7 +148,7 @@ class StudentControllerTest {
 
     @Test
     void checkUserExceptionWhenDeleteStudent() throws Exception {
-        Mockito.doThrow(UserException.class).when(userService).deletedById(1);
+        Mockito.doThrow(UserException.class).when(studentService).deletedById(1);
         mockMvc.perform(MockMvcRequestBuilders.delete("/students/1"))
                 .andExpectAll(
                         MockMvcResultMatchers.status().is2xxSuccessful(),
